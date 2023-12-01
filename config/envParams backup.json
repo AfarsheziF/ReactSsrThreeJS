@@ -1,0 +1,130 @@
+{
+    "antialias": true,
+    "rendererExposure": 1,
+    "rendererGamma": 1,
+    "rendererBackgroundColor": "#454545",
+    "toneMapping": 2,
+    "near": 5,
+    "fov": 50,
+    "far": 10000000,
+    "cameraStartPos": {
+        "x": 0,
+        "y": 0,
+        "z": -1200
+    },
+    "cameraStartPos_mobile": {
+        "x": 0,
+        "y": 0,
+        "z": -4500000
+    },
+    "zoomValue": 5,
+    "sceneBackgroundColor": "#000000",
+    "controlsEnableRotate": true,
+    "blockInteraction": false,
+    "cameraRotation": true,
+    "cameraRotationSpeed": 0.1,
+    "materialsColor": "#ffffff",
+    "materialDebreeColor": "#ffffff",
+    "materialsCombine": 1,
+    "materialsRoughness": 1,
+    "materialsMetalness": 1,
+    "materialsEmissiveColor": "#ffffff",
+    "materialEmissiveIntensity": 0,
+    "materialsWireframe": false,
+    "materialsFlatShading": false,
+    "materialsSpecularColor": "#ffffff",
+    "materialsShininess": 200,
+    "materialsReflectivity": 0.8,
+    "materialsReflectionRatio": 0.98,
+    "materialsClearcoat": 1,
+    "materialsClearcoatRoughness": 1,
+    "materialsTransmission": 0,
+    "materialBumpScale": 0.3,
+    "materialsDisplacementScale": 3,
+    "materialsDisplacementBias": 0,
+    "phongMaterialsMetalness": 1,
+    "materialEnvMapIntensity": 1,
+    "onReflections": true,
+    "lights": {
+        "ambientLight": {
+            "color": "#ffffff",
+            "intensity": 0.1
+        },
+        "pointLight": {
+            "color": "#ffffff",
+            "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "intensity": 2,
+            "distance": 0,
+            "decay": 0,
+            "power": 150
+        }
+    },
+    "lightHelpers": [],
+    "debugLights": true,
+    "lightsColor": "#ffffff",
+    "lightsIntensity": 2,
+    "spotLightAngle": 0.25,
+    "lightsCenterDistance": 600,
+    "lightDistance": 5000,
+    "lightsPower": 180,
+    "castShadow": false,
+    "receiveShadow": false,
+    "shadowMapResolution": 2048,
+    "shadowNear": 0.5,
+    "shadowFar": 500,
+    "shadowFocus": 1,
+    "ambientColor": "#ffffff",
+    "onCameraRotation": true,
+    "components": {
+        "blobPlanet": {
+            "width": 1024,
+            "width_mobile": 512,
+            "meshDetail": 200,
+            "visible": true,
+            "opacity": 0.7,
+            "velocity": 1,
+            "initVelocity": 1,
+            "wireframe": false,
+            "rimPower": 2,
+            "rimStrength": 0.2,
+            "sineWavesStrength": 0.1,
+            "sineWavesSpeed": 1,
+            "sineWavesPow": 1.52,
+            "sineWavesScale": 1,
+            "sineWavesCustomScale": 0.93,
+            "sineWaveColor": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            },
+            "sineWavesAutoResize": true,
+            "ambientLightsStrength": 0.5,
+            "collisionsClusterNoiseScale": 20,
+            "ambientLightColor": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            },
+            "velColorStrength": 0,
+            "gradientColor1": {
+                "x": 0,
+                "y": 0,
+                "z": 1
+            },
+            "gradientColor2": {
+                "x": 0.75,
+                "y": 0.25,
+                "z": 0.85
+            },
+            "gradientColorStrength": 0.5
+        },
+        "planets": {
+            "materialsType": "MeshPhysicalMaterial",
+            "materialsType_mobile": "MeshPhongMaterial"
+        }
+    }
+}

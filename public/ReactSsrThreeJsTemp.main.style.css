@@ -1,0 +1,377 @@
+/*!***********************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./app/style/fonts.scss ***!
+  \***********************************************************************************************************************************************************************/
+@import url(https://fonts.googleapis.com/css2?family=Poppins&display=swap);
+/*!************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./app/style/colors.scss ***!
+  \************************************************************************************************************************************************************************/
+.secondaryColor {
+  color: #556cd6; }
+
+.primaryColor {
+  color: #ffffff; }
+
+.grey {
+  color: grey !important; }
+
+.white {
+  color: white; }
+
+.black {
+  color: black; }
+
+.textShadow {
+  text-shadow: 1px 1px 5px grey; }
+
+/*!***************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./app/style/fonts.scss (1) ***!
+  \***************************************************************************************************************************************************************************/
+.secondaryColor {
+  color: #556cd6; }
+
+.primaryColor {
+  color: #ffffff; }
+
+.grey {
+  color: grey !important; }
+
+.white {
+  color: white; }
+
+.black {
+  color: black; }
+
+.textShadow {
+  text-shadow: 1px 1px 5px grey; }
+
+h1,
+h2,
+h3,
+h4,
+p,
+a {
+  color: #ffffff;
+  font-family: "Poppins", sans-serif; }
+
+a {
+  color: #ffffff;
+  text-decoration: underline;
+  transition: color ease 1s;
+  cursor: pointer; }
+
+a:hover {
+  color: #556cd6; }
+
+.regular {
+  font-weight: 400; }
+
+.bold {
+  font-weight: bold; }
+
+.bolder {
+  font-weight: bolder; }
+
+.uppercase {
+  text-transform: uppercase; }
+
+.capitalize {
+  text-transform: capitalize; }
+
+.xl {
+  font-size: x-large; }
+
+.xxl {
+  font-size: xx-large; }
+
+.xxxl {
+  font-size: xxx-large; }
+
+.normal {
+  font-weight: normal; }
+
+/*!***********************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./app/style/style.scss ***!
+  \***********************************************************************************************************************************************************************/
+.secondaryColor {
+  color: #556cd6; }
+
+.primaryColor {
+  color: #ffffff; }
+
+.grey {
+  color: grey !important; }
+
+.white {
+  color: white; }
+
+.black {
+  color: black; }
+
+.textShadow {
+  text-shadow: 1px 1px 5px grey; }
+
+html,
+body {
+  height: 100%;
+  overflow: hidden; }
+
+img {
+  width: 100%; }
+
+iframe {
+  width: 1px;
+  min-width: 100%;
+  min-height: 100%; }
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a {
+  margin: 0; }
+
+a {
+  text-decoration: underline;
+  color: #ffffff; }
+
+a:hover {
+  color: #556cd6; }
+
+.filterShadow {
+  filter: drop-shadow(1px 1px 5px gray);
+  -webkit-filter: drop-shadow(1px 1px 5px gray);
+  -ms-filter: "progid:DXImageTransform.Microsoft.Dropshadow(OffX=1, OffY=1, Color='#000')"; }
+
+.noShadow {
+  text-shadow: none; }
+
+.m-0 {
+  margin: 0px !important; }
+
+.pointer {
+  cursor: pointer !important;
+  transition: color ease 1s; }
+
+.pointer:hover {
+  color: #556cd6; }
+
+.centerDiv {
+  display: flex;
+  align-items: center; }
+
+.aStyle {
+  text-decoration: underline;
+  color: #ffffff;
+  cursor: pointer;
+  transition: color 500ms ease; }
+
+.aStyle:hover {
+  color: #556cd6; }
+
+.active {
+  color: #556cd6; }
+
+.show {
+  opacity: 0.7; }
+
+.hide {
+  opacity: 0; }
+
+.capitalize {
+  text-transform: capitalize; }
+
+.fullWidth {
+  width: 100%; }
+
+.wpDialog {
+  background: rgba(142, 36, 66, 0.5);
+  transition: all 1s; }
+
+.loadingDialog {
+  background: rgba(25, 25, 25, 0.5);
+  transition: all 1s;
+  opacity: 0; }
+
+.loadingDialog.in {
+  opacity: 1; }
+
+.loadingDialog.out {
+  opacity: 0; }
+
+.player {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: -1; }
+
+.border {
+  border: solid 2px #ffffff;
+  border-radius: 10px;
+  transition: border-color ease 1s; }
+
+.border:hover {
+  border-color: #556cd6; }
+
+.borderWhite {
+  border: solid 2px white;
+  border-radius: 10px;
+  transition: border-color ease 1s; }
+
+.borderBlack {
+  border: solid 2px black;
+  border-radius: 10px;
+  transition: border-color ease 1s; }
+
+.debugBorder {
+  border: solid 2px green; }
+
+.transitionAll {
+  transition: all 500ms ease; }
+
+.transitionLong {
+  transition: all 2s ease; }
+
+.transitionFast {
+  transition: all 150ms ease; }
+
+.MuiMobileStepper-dot {
+  background-color: gray !important; }
+
+.MuiMobileStepper-dotActive {
+  background-color: white !important; }
+
+.MuiGridListTile-imgFullHeight {
+  width: auto !important; }
+
+.myIframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: none;
+  top: 0px;
+  opacity: 0.9;
+  transition: all ease 1s;
+  z-index: -999; }
+
+.centerContainer {
+  display: -webkit-flexbox;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  justify-content: center;
+  height: 100%; }
+
+.slider-no-track .MuiSlider-track {
+  visibility: hidden; }
+
+.esuwBtn {
+  color: #ffffff !important;
+  background-color: "#5050507F"; }
+
+.esuwBtn:hover {
+  background-color: #556cd6 !important; }
+
+#root {
+  height: 100%; }
+
+::-webkit-scrollbar {
+  width: 1;
+  background: transparent; }
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border: solid white 0.8px;
+  border-radius: 10px; }
+
+#printWindow {
+  display: none; }
+
+/*!***********************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./app/style/media.scss ***!
+  \***********************************************************************************************************************************************************************/
+@media (min-width: 320px) {
+  /* smartphones, iPhone, portrait 480x320 phones */ }
+
+@media (min-width: 481px) {
+  /* portrait e-readers (Nook/Kindle), smaller tablets @ 600 or @ 640 wide. */ }
+
+@media (min-width: 641px) {
+  /* portrait tablets, portrait iPad, landscape e-readers, landscape 800x480 or 854x480 phones */ }
+
+@media (min-width: 961px) {
+  /* tablet, landscape iPad, lo-res laptops ands desktops */ }
+
+@media (min-width: 1025px) {
+  /* big landscape tablets, laptops, and desktops */ }
+
+@media (min-width: 1281px) {
+  /* hi-res laptops and desktops */ }
+
+/*!****************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./app/style/animations.scss ***!
+  \****************************************************************************************************************************************************************************/
+.secondaryColor {
+  color: #556cd6; }
+
+.primaryColor {
+  color: #ffffff; }
+
+.grey {
+  color: grey !important; }
+
+.white {
+  color: white; }
+
+.black {
+  color: black; }
+
+.textShadow {
+  text-shadow: 1px 1px 5px grey; }
+
+.un {
+  transition: 300ms; }
+
+.un:hover {
+  cursor: pointer;
+  color: #556cd6; }
+
+.un.active {
+  color: #556cd6; }
+
+.entrance-animation {
+  position: relative;
+  white-space: nowrap;
+  width: 0;
+  overflow: hidden;
+  transition: width 0.5s ease; }
+
+.entrance-animation::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #ffffff;
+  z-index: 10;
+  transition: width 0.5s ease;
+  transition-delay: 0.5s;
+  border: solid #ffffff 0.5px; }
+
+.entrance-animation.in {
+  width: 100%;
+  opacity: 1; }
+
+.entrance-animation.in::before {
+  width: 0%; }
+
+.entrance-animation.in::after {
+  width: 0%; }
+

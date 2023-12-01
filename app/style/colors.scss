@@ -1,0 +1,32 @@
+$primaryColor: #ffffff;
+$secondaryColor: #556cd6;
+$accentColor: #ffffff;
+
+// .active {
+//   color: $secondaryColor !important;
+//   border-color: $secondaryColor !important;
+// }
+
+.secondaryColor {
+  color: $secondaryColor;
+}
+
+.primaryColor {
+  color: $primaryColor;
+}
+
+.grey {
+  color: grey !important;
+}
+
+.white {
+  color: white;
+}
+
+.black {
+  color: black;
+}
+
+.textShadow {
+  text-shadow: 1px 1px 5px grey;
+}

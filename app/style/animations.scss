@@ -1,0 +1,48 @@
+@import "colors";
+
+.un {
+    transition: 300ms;
+}
+
+.un:hover {
+    cursor: pointer;
+    color: $secondaryColor;
+}
+
+.un.active {
+    color: $secondaryColor;
+}
+
+.entrance-animation {
+    position: relative;
+    white-space: nowrap;
+    width: 0;
+    overflow: hidden;
+    transition: width 0.5s ease;
+}
+.entrance-animation::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    background-color: $accentColor;
+    z-index: 10;
+    transition: width 0.5s ease;
+    transition-delay: 0.5s;
+    border: solid $accentColor 0.5px;
+    // border-radius: 8px;
+    // opacity: 0;
+}
+.entrance-animation.in {
+    width: 100%;
+    opacity: 1;
+}
+.entrance-animation.in::before {
+    width: 0%;
+}
+
+.entrance-animation.in::after {
+    width: 0%;
+}

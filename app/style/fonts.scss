@@ -1,0 +1,62 @@
+@import "colors";
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+$mainFont: "Poppins", sans-serif;
+// $mainFont: "Titillium Web", sans-serif
+
+h1,
+h2,
+h3,
+h4,
+p,
+a {
+  color: $primaryColor;
+  font-family: $mainFont;
+}
+
+a {
+  color: $primaryColor;
+  text-decoration: underline;
+  transition: color ease 1s;
+  cursor: pointer;
+}
+a:hover {
+  color: $secondaryColor;
+}
+
+.regular {
+  font-weight: 400;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.bolder {
+  font-weight: bolder;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.xl {
+  font-size: x-large;
+}
+
+.xxl {
+  font-size: xx-large;
+}
+
+.xxxl {
+  font-size: xxx-large;
+}
+
+.normal {
+  font-weight: normal;
+}

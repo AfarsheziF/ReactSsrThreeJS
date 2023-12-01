@@ -1,0 +1,22 @@
+{
+    "aboutDialog": {
+        "state1": {
+            "text": {
+                "desktop": "<h3>EARTH SIGNAL UNIVERSE WIDE<br/><br/>Use the mouse to move around the solar system. A click on a selected planet will focus the camera. Click 'START TRANSMISSION' button to start the simulation</h3>",
+                "mobile": {}
+            }
+        },
+        "state2": {
+            "images": [
+                "/images/screenshots/ESUW_Screenshot_1.jpg",
+                "/images/screenshots/ESUW_Screenshot_2.jpg",
+                "/images/screenshots/ESUW_Screenshot_3.jpg",
+                "/images/screenshots/ESUW_Screenshot_4.jpg"
+            ],
+            "text": {
+                "desktop": "<div className='noShadow'><h2 className='regular'>EARTH SIGNAL UNIVERSE WIDE Is a web application simulate an radio transmission in space.<br/>The project ...</h2><br /><h2 className='xxl'>Radio transmission GPGPU Simulation process</h2><br /><!images!><br /><br /><p>ESUW Web Simulation developed by <a href='https: //www.orsarfati.com/' target='_blank'>Or Sarfati</a>. GLSL Mesh generation by <a href='https://hamoid.com/' target='_blank'>Abe Pazos</a>.</p></div>",
+                "mobile": {}
+            }
+        }
+    }
+}

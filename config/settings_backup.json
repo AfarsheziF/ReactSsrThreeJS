@@ -1,0 +1,63 @@
+{
+    "title": "Settings",
+    "subtitle_mobile": "Settings are disabled in mobile.",
+    "inputs": [
+        {
+            "name": "texturesMode",
+            "type": "dropdown",
+            "text": "Textures Mode",
+            "value": "lowRes",
+            "value_mobile": "resized",
+            "disabled_mobile": true,
+            "values": [
+                {
+                    "title": "High",
+                    "value": "highRes"
+                },
+                {
+                    "title": "Medium",
+                    "value": "medRes"
+                },
+                {
+                    "title": "Low",
+                    "value": "lowRes",
+                    "value_mobile": "resized"
+                }
+            ],
+            "closeDialogOnChange": true
+        },
+        {
+            "name": "blobPlanetMeshDetail",
+            "type": "dropdown",
+            "text": "Simulation Resolution",
+            "value": 200,
+            "value_mobile": 100,
+            "disabled_mobile": true,
+            "values": [
+                {
+                    "title": "Extreme",
+                    "value": 400
+                },
+                {
+                    "title": "High",
+                    "value": 300
+                },
+                {
+                    "title": "Medium",
+                    "value": 200
+                },
+                {
+                    "title": "Low",
+                    "value": 100
+                }
+            ],
+            "closeDialogOnChange": true
+        },
+        {
+            "name": "showUI",
+            "type": "switch",
+            "value": true,
+            "text": "Show Interface"
+        }
+    ]
+}
