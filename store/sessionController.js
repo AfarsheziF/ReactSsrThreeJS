@@ -1,11 +1,11 @@
-import utils from "../utils/utils";
+import serverUtils from "../utils/serverUtils";
 
 const sessionController = {
 
     sessions: [],
 
     generateSession() {
-        let code = utils.generateHashCode();
+        let code = serverUtils.generateHashCode();
         this.sessions.push({
             code: code,
             valid: true,

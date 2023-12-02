@@ -11,6 +11,7 @@ module.exports = {
   target: 'web',
   entry: './client.js',
   mode: process.env.NODE_ENV || 'production',
+  devtool: 'eval-source-map',
   output: {
     globalObject: 'this',
     path: path.resolve(__dirname, 'public'),
@@ -19,7 +20,10 @@ module.exports = {
   },
   resolve: {
     fallback: {
+      // Loading node modules from client
       fs: false,
+      path: false,
+      https: false
     },
     alias: {
       Images: path.resolve(__dirname, 'public/images'),
@@ -72,5 +76,5 @@ module.exports = {
       }
     )
   ],
-  optimization: {},
+  optimization: {}
 };

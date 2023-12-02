@@ -20,7 +20,7 @@ import App from './app/app';
 import theme from './theme';
 
 import logger from './logs/logger';
-import utils from './utils/utils';
+import serverUtils from './utils/serverUtils';
 import dataController from './store/dataController';
 
 import sessionController from './store/sessionController';
@@ -29,6 +29,7 @@ const app = express();
 const port = process.env.PORT || 62099;
 
 const rootDir = path.resolve('./');
+console.log("Root:", rootDir)
 global.hostState = process.env.NODE_ENV || 'production';
 global.__DEV__ = process.env.NODE_ENV === "development";
 global.basePrefix = process.env.NODE_ENV === "development" ? "" : "ESUW";
@@ -123,7 +124,7 @@ function handleRender(req, res) {
       emotionCss,
       appConfig.name,
       null,
-      utils.toTitleCase(appConfig.name.replaceAll("_", " ")),
+      serverUtils.toTitleCase(appConfig.name.replaceAll("_", " ")),
       null,
       null,
       serialize({
@@ -148,7 +149,7 @@ app.listen(port, () => {
     global.hostState
   ).then(
     function () {
-      logger.log(" --- Server Stared --- ");
+      logger.log(">--- Server Stared ---< ");
       logger.log(`Listening on ${port}`);
       logger.log(`BaseUrl: ${global.baseUrl}`);
 

@@ -399,4 +399,5 @@ class ResponsiveDialog extends React.Component {
     }
 }
 
-export default styled(ResponsiveDialog);
+// export default styled(ResponsiveDialog);
+export default (ResponsiveDialog);

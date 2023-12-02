@@ -6,9 +6,6 @@
     "email": "afrshezif@gmail.com",
     "url": "http://orsarfati.com"
   },
-  "engines": {
-    "node": ">=20"
-  },
   "private": true,
   "dependencies": {
     "@babel/core": "^7.23.3",
@@ -60,6 +57,13 @@
     "webpack-cli": "^5.1.4",
     "webpack-node-externals": "^3.0.0"
   },
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@svgr/webpack": "^6.4.0",
+    "@types/node": "^18.8.5",
+    "browser-sync-webpack-plugin": "^2.3.0",
+    "terser-webpack-plugin": "^5.0.3"
+  },
   "scripts": {
     "start": "cross-env NODE_ENV=production node public/ReactSsrThreeJsTemp.server.bundle.js",
     "webpack:client": "webpack --config webpack.client.js --watch",
@@ -67,21 +71,14 @@
     "webpack:start": "nodemon --watch public --exec node --inspect public/ReactSsrThreeJsTemp.server.bundle.js",
     "dev": "cross-env sendErrorEmails=\"true\" NODE_ENV=development npm-run-all --parallel webpack:*",
     "dev_linux": "cross-env NODE_OPTIONS=--openssl-legacy-provider sendErrorEmails=\"true\" NODE_ENV=development npm-run-all --parallel webpack:*",
-    "debug": "cross-env NODE_ENV=development --debug-brk=5858 npm-run-all --parallel webpack:*",
     "build": "cross-env NODE_ENV=production webpack --mode production --config webpack.client.js && webpack --mode production --config webpack.server.js",
+    "build_dev": "cross-env sendErrorEmails=\"true\" NODE_ENV=development webpack --config webpack.client.js && webpack --config webpack.server.js",
     "build_linux": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production npm-run-all linux:*",
     "build_render": "cross-env NODE_ENV=production npm-run-all linux:*",
     "linux:client": "webpack --mode production --config webpack.client.js",
-    "linux:server": "webpack --mode production --config webpack.server.js",
-    "babelApp": "node_modules/.bin/babel app -d functions/app",
-    "babelIndex": "node_modules/.bin/babel server.js -d functions/ server.js",
-    "babelTheme": "node_modules/.bin/babel theme.js -d functions/"
+    "linux:server": "webpack --mode production --config webpack.server.js"
   },
-  "devDependencies": {
-    "@babel/plugin-transform-runtime": "^7.17.0",
-    "@svgr/webpack": "^6.4.0",
-    "@types/node": "^18.8.5",
-    "browser-sync-webpack-plugin": "^2.3.0",
-    "terser-webpack-plugin": "^5.0.3"
+  "engines": {
+    "node": ">=20"
   }
 }

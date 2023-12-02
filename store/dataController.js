@@ -3,7 +3,7 @@
 import request from 'request';
 import multer from 'multer';
 import logger from '../logs/logger';
-import utils from '../utils/utils';
+import serverUtils from '../utils/serverUtils';
 import sessionController from './sessionController';
 
 const folderName = 'uploads';
@@ -22,7 +22,7 @@ const dataController = {
 
     clearStorageDirectory() {
         return new Promise((resolve, reject) => {
-            utils.emptyDir('/' + folderName).then(
+            serverUtils.emptyDir('/' + folderName).then(
                 res => resolve(res),
                 e => reject(e)
             )
@@ -47,11 +47,11 @@ const dataController = {
                         if (__DEV__ || (params.session && sessionController.validateSession(params.session))) {
                             let filePath = params.filePath + '/' + (params.fileName || req.file.originalname);
 
-                            utils.readFile(filePath)
+                            serverUtils.readFile(filePath)
                                 .then(
                                     function (file) {
                                         // console.log(file);
-                                        utils.copyFile(
+                                        serverUtils.copyFile(
                                             `/${folderName}/` + req.file.originalname,
                                             params.filePath + '/' + req.file.originalname
                                         )

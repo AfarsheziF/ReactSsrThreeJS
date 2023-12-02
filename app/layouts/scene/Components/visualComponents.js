@@ -31,7 +31,7 @@ import WaveletNoise from './Shaders/WaveletNoise/WaveletNoise';
 import TestShader from './Shaders/TestShader/TestShader';
 import AlienSphere from "./Shaders/AlianSphere/AlianSphere.js";
 import Protoplanet from './Shaders/Protoplanet/protoplanet';
-import BlobPlanet from './Shaders/BlobPlanet/BlobPlanet';
+// import BlobPlanet from './Shaders/BlobPlanet/BlobPlanet';
 
 import utils from '../../../utils/utils';
 
@@ -101,50 +101,14 @@ const visualComponents = {
                 Hide: () =>
                     document.getElementsByClassName("lil-gui")[0].style.display = 'none'
             }, 'Hide');
-
-
-            const folderMaterials = this.gui.addFolder('Materials').close();
-            folderMaterials.add(envParams.materials, 'materialEnvMapIntensity', 0, 2, 0.1);
-            folderMaterials.addColor(envParams.materials, 'materialsColor');
-            folderMaterials.addColor(envParams.materials, 'materialsEmissiveColor');
-            folderMaterials.add(envParams.materials, 'materialEmissiveIntensity', 0, 2, 0.1);
-            folderMaterials.add(envParams.materials, 'materialsReflectivity', 0, 1, 0.1);
-            folderMaterials.add(envParams.materials, 'materialsReflectionRatio', 0, 0.98, 0.1);
-            folderMaterials.add(envParams.materials, 'materialsWireframe');
-            folderMaterials.add(envParams.materials, 'materialsFlatShading');
-
-            const folderPhongMaterials = this.gui.addFolder('Phong Materials').close();
-            folderPhongMaterials.add(envParams.materials, 'materialsShininess', 0, 500, 1);
-            // folderPhongMaterials.add(envParams.materials, 'phongMaterialsMetalness', 0, 10, 0.1);
-            folderPhongMaterials.addColor(envParams.materials, 'materialsSpecularColor');
-
-            const folderPhysicalMaterials = this.gui.addFolder('Mesh Physical Materials').close();
-            folderPhysicalMaterials.add(envParams.materials, 'materialsRoughness', 0, 1, 0.1);
-            folderPhysicalMaterials.add(envParams.materials, 'materialsMetalness', 0, 1, 0.1);
-            folderPhysicalMaterials.add(envParams.materials, 'materialsClearcoat', 0, 1, 0.1);
-            folderPhysicalMaterials.add(envParams.materials, 'materialsClearcoatRoughness', 0, 1, 0.1);
-            folderPhysicalMaterials.add(envParams.materials, 'materialBumpScale', 0, 1, 0.1);
-            folderPhysicalMaterials.add(envParams.materials, 'materialsDisplacementScale', -100, 100, 0.1);
-            folderPhysicalMaterials.add(envParams.materials, 'materialsDisplacementBias', -10, 10, 0.1);
-            // folderPhysicalMaterials.add(envParams, 'materialsTransmission', 0, 1, 0.1);
+            this.gui.add({
+                Download: () =>
+                    console.log("Download function is missing")
+            }, 'Download');
 
             this.stats = Stats()
             this.stats.domElement.style.cssText = 'position:absolute;bottom:0px;left:0px;';
             document.body.appendChild(this.stats.dom)
-        }
-    },
-
-    updateLoadingStates(url, state) {
-        this.loadingStates[url] = {
-            url: url,
-            loaded: state
-        }
-        if (state) {
-            this.loadingStates.loaded++;
-            this.loadingStates.progress = this.loadingStates.loaded * 100 / this.loadingStates.destination;
-        }
-        if (this.uiFilesDownloadCallback) {
-            this.uiFilesDownloadCallback(this.loadingStates);
         }
     },
 
@@ -155,25 +119,25 @@ const visualComponents = {
         } else {
             renderer = new THREE.WebGLRenderer(rendererOptions);
         }
-        renderer.setClearColor(this.envParams.rendererBackgroundColor);
+        renderer.setClearColor(this.envParams.renderer.rendererBackgroundColor);
         if (renderer.setPixelRatio) renderer.setPixelRatio(window.devicePixelRatio || 1);
         renderer.setSize(width, height);
-        this.envParams.maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
+        this.envParams.renderer.maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
         global.isLowEndMobile = false;
-        if (envParams.maxAnisotropy <= 4) {
+        if (this.envParams.renderer.maxAnisotropy.maxAnisotropy <= 4) {
             global.isLowEndMobile = true;
-            this.envParams.castShadow = false;
-            this.envParams.receiveShadow = false;
-            this.envParams.onReflections = false;
+            this.envParams.lights.castShadow = false;
+            this.envParams.lights.receiveShadow = false;
+            this.envParams.materials.onReflections = false;
         }
         renderer.shadowMap.enabled = !utils.isMobile;
         renderer.shadowMap.autoUpdate = !utils.isMobile;
         renderer.shadowMap.type = utils.isMobile ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
-        renderer.toneMapping = this.envParams.toneMapping;
-        renderer.toneMappingExposure = Math.pow(this.envParams.rendererExposure, 4.0);
+        renderer.toneMapping = this.envParams.renderer.toneMapping;
+        renderer.toneMappingExposure = Math.pow(this.envParams.renderer.rendererExposure, 4.0);
         renderer.outputEncoding = THREE.sRGBEncoding;
         renderer.physicallyCorrectLights = true;
-        renderer.gammaFactor = this.envParams.rendererGamma;
+        renderer.gammaFactor = this.envParams.renderer.rendererGamma;
 
         // renderer.autoClear = false;
 
@@ -203,10 +167,10 @@ const visualComponents = {
             this.pmremGenerator = new THREE.PMREMGenerator(renderer);
             if (this.onDebug) {
                 const folderRenderer = this.gui.addFolder('Renderer').close();
-                folderRenderer.add(this.envParams, 'toneMapping', ['NoToneMapping', 'ReinhardToneMapping', 'ACESFilmicToneMapping']);
-                folderRenderer.add(this.envParams, 'rendererExposure', 0, 2, 0.1);
-                folderRenderer.add(this.envParams, 'rendererGamma', 0, 3, 0.1);
-                folderRenderer.addColor(this.envParams, 'rendererBackgroundColor');
+                folderRenderer.add(this.envParams.renderer, 'toneMapping', ['NoToneMapping', 'ReinhardToneMapping', 'ACESFilmicToneMapping']);
+                folderRenderer.add(this.envParams.renderer, 'rendererExposure', 0, 2, 0.1);
+                folderRenderer.add(this.envParams.renderer, 'rendererGamma', 0, 3, 0.1).disable();
+                folderRenderer.addColor(this.envParams.renderer, 'rendererBackgroundColor');
             }
         }
 
@@ -215,51 +179,74 @@ const visualComponents = {
 
     createScene(backgroundTexture) {
         this.scene = new THREE.Scene();
-        if (this.envParams.sceneBackgroundColor) {
-            this.scene.background = new THREE.Color(this.envParams.sceneBackgroundColor);
+        if (this.envParams.scene.sceneBackgroundColor) {
+            this.scene.background = new THREE.Color(this.envParams.scene.sceneBackgroundColor);
         } else {
             this.scene.background = new THREE.Color("0x000000");
         }
-        // scene.background = backgroundTexture;
+        if (this.envParams.fog.active) {
+            this.scene.fog = new THREE.Fog(
+                new THREE.Color(this.envParams.fog.color),
+                this.envParams.fog.near,
+                this.envParams.fog.far
+            );
+        }
+
         if (this.onDebug) {
             const folderScene = this.gui.addFolder('Scene').close();
-            folderScene.addColor(this.envParams, 'sceneBackgroundColor');
+            folderScene.addColor(this.envParams.scene, 'sceneBackgroundColor');
+
+            const folderFog = this.gui.addFolder('Fog').close();
+            folderFog.add(this.envParams.fog, 'active');
+            folderFog.add(this.envParams.fog, 'near', 0, 1);
+            folderFog.add(this.envParams.fog, 'far', 500, 10000);
+            folderFog.addColor(this.envParams.fog, 'color');
         }
     },
 
     createCamera(width, height, isSecondary) {
-        let camera = new THREE.PerspectiveCamera(this.envParams.fov, width / height, this.envParams.near, this.envParams.far);
+        let camera = new THREE.PerspectiveCamera(
+            this.envParams.camera.fov,
+            width / height,
+            this.envParams.camera.near,
+            this.envParams.camera.far
+        );
         if (!isSecondary) {
             this.camera = camera;
             camera.position.copy(new THREE.Vector3(
-                this.envParams.cameraStartPos.x,
-                this.envParams.cameraStartPos.y,
-                this.envParams.cameraStartPos.z
+                this.envParams.camera.cameraStartPos.x,
+                this.envParams.camera.cameraStartPos.y,
+                this.envParams.camera.cameraStartPos.z
             ));
 
             this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-            this.controls.enableDamping = true;
-            this.controls.dampingFactor = 0.02;
+            this.controls.enableDamping = this.envParams.camera.enableDamping;
+            this.controls.dampingFactor = this.envParams.camera.dampingFactor;
             this.controls.enableZoom = !utils.isMobile;
-            this.controls.zoomSpeed = 0.01;//this.envParams.zoomSpeed || 0.01;
-            this.controls.minDistance = this.envParams.minDistance || 0;
-            this.controls.maxDistance = this.envParams.maxDistance || Infinity;
+            this.controls.zoomSpeed = this.envParams.camera.zoomSpeed;
+            this.controls.minDistance = this.envParams.camera.minDistance || 0;
+            this.controls.maxDistance = this.envParams.camera.maxDistance || Infinity;
             this.controls.enableKeys = true;
             this.controls.enabled = true;
             this.controls.enablePan = !utils.isMobile;;
-            this.controls.enableRotate = this.envParams.controlsEnableRotate;
-            this.controls.autoRotateSpeed = this.envParams.cameraRotationSpeed;
+            this.controls.enableRotate = this.envParams.camera.enableControlsRotation;
+            this.controls.autoRotateSpeed = this.envParams.camera.cameraRotationSpeed;
+            this.controls.autoRotate = this.envParams.camera.enableCameraRotation;
 
             if (this.onDebug) {
                 const folderCamera = this.gui.addFolder('Camera').close();
-                folderCamera.add(this.envParams, 'fov', 10, 100);
-                folderCamera.add(this.envParams, 'near', 0.1, 10000);
-                folderCamera.add(this.envParams, 'far', 1, 100000000);
-                folderCamera.add(this.envParams, 'controlsEnableRotate').onChange((value) => {
-                    if (!this.controls && this.controls.dampingFactor) {
+                folderCamera.add(this.envParams.camera, 'fov', 10, 100);
+                folderCamera.add(this.envParams.camera, 'near', 0.1, 10000);
+                folderCamera.add(this.envParams.camera, 'far', 1, 100000000);
+                folderCamera.add(this.envParams.camera, 'zoomSpeed', 0, 1);
+                folderCamera.add(this.envParams.camera, 'dampingFactor', 0, 1);
+                folderCamera.add(this.envParams.camera, 'enableDamping');
+                folderCamera.add(this.envParams.camera, 'enableCameraRotation');
+                folderCamera.add(this.envParams.camera, 'enableControlsRotation').onChange((value) => {
+                    if (!this.controls) {
                         this.controls = new OrbitControls(this.camera, this.components.renderer.domElement);
-                        this.controls.enableDamping = true;
-                        this.controls.dampingFactor = 0.02;
+                        this.controls.enableDamping = this.envParams.camera.enableDamping;
+                        this.controls.dampingFactor = this.envParams.camera.dampingFactor;
                         this.controls.enableZoom = true;
                         this.controls.enableKeys = false;
                         this.controls.enabled = true;
@@ -269,25 +256,11 @@ const visualComponents = {
                     }
                     this.controls.enableRotate = value;
                 });
-                folderCamera.add(this.envParams, 'blockInteraction');
-                this.envParams.resetControls = this.controls.reset;
-                folderCamera.add(this.envParams, 'resetControls');
+                folderCamera.add(this.envParams.camera, 'blockInteraction');
+                this.envParams.camera.resetControls = this.controls.reset;
+                folderCamera.add(this.envParams.camera, 'resetControls');
             }
         }
-    },
-
-    createSky() {
-        sky = new Sky();
-        sky.scale.setScalar(10000);
-        scene.add(sky);
-        scene.background = pmremGenerator.fromScene(sky).texture;
-
-        const skyUniforms = sky.material.uniforms;
-        skyUniforms['turbidity'].value = envParams.turbidity;
-        skyUniforms['rayleigh'].value = envParams.rayleigh;
-        skyUniforms['mieCoefficient'].value = envParams.mieCoefficient;
-        skyUniforms['mieDirectionalG'].value = envParams.mieDirectionalG;
-        skyUniforms['color'].value = new THREE.Color(envParams.skyColor);
     },
 
     //Objects
@@ -331,13 +304,14 @@ const visualComponents = {
                     break;
 
                 case "blobplanet":
-                    BlobPlanet.init(this.renderer, scene || this.scene, this.camera, this.envParams, position, that.onDebug ? that.gui : null).then(
-                        function () {
-                            resolve(BlobPlanet);
-                        }, function (e) {
-                            reject(e);
-                        }
-                    )
+                    //TODO: Threejs inject has error
+                    // BlobPlanet.init(this.renderer, scene || this.scene, this.camera, this.envParams, position, that.onDebug ? that.gui : null).then(
+                    //     function () {
+                    //         resolve(BlobPlanet);
+                    //     }, function (e) {
+                    //         reject(e);
+                    //     }
+                    // )
                     break;
 
                 case "water":
@@ -357,10 +331,10 @@ const visualComponents = {
                                     _texture.wrapS = _texture.wrapT = THREE.RepeatWrapping;
                                 }),
                             sunDirection: this.components.sun,
-                            sunColor: this.envParams.components.water.sunColor,
+                            sunColor: this.envParams.components.sun.color,
                             waterColor: this.envParams.components.water.waterColor,
                             distortionScale: this.envParams.components.water.waterDistortionScale,
-                            fog: this.envParams.onFog
+                            fog: this.envParams.fog.active
                         }
                     );
                     // water.material.side = THREE.BackSide;
@@ -373,7 +347,6 @@ const visualComponents = {
                         const folderWater = this.gui.addFolder('Water').close();
                         folderWater.add(this.envParams.components.water, 'visible');
                         folderWater.addColor(this.envParams.components.water, 'waterColor');
-                        folderWater.addColor(this.envParams.components.water, 'sunColor');
                         folderWater.add(this.envParams.components.water, 'waterDistortionScale', 0, 20, 0.1);
                         folderWater.add(this.envParams.components.water, 'waterSpeed', 0, 0.1, 0.0001);
                     }
@@ -406,8 +379,8 @@ const visualComponents = {
                     if (this.onDebug) {
                         const folderSky = this.gui.addFolder('Sky').close();
                         folderSky.add(this.envParams.components.sky, 'visible');
-                        folderSky.addColor(this.envParams.components.sky, 'skyColor');
-                        folderSky.addColor(this.envParams.components.sky, 'skyRayColor');
+                        folderSky.addColor(this.envParams.components.sky, 'skyColor').disable();
+                        folderSky.addColor(this.envParams.components.sky, 'skyRayColor').disable();
                         folderSky.add(this.envParams.components.sky, 'turbidity', 0.0, 20.0, 0.1);
                         folderSky.add(this.envParams.components.sky, 'rayleigh', 0.0, 4, 0.001);
                         folderSky.add(this.envParams.components.sky, 'mieCoefficient', 0.0, 0.1, 0.001);
@@ -591,14 +564,14 @@ const visualComponents = {
                 envMap: cubeRenderTarget2.texture,
                 // transparent: true
                 map: map,
-                emissive: new THREE.Color(envParams.materialsEmissiveColor).convertSRGBToLinear(),
-                emissiveIntensity: envParams.materialEmissiveIntensity,
+                emissive: new THREE.Color(envParams.materials.materialsEmissiveColor).convertSRGBToLinear(),
+                emissiveIntensity: envParams.materials.materialEmissiveIntensity,
                 emissiveMap: map,
-                specular: envParams.materialsSpecularColor,
+                specular: envParams.materials.materialsSpecularColor,
                 specularMap: map,
-                shininess: envParams.materialsShininess,
-                reflectivity: envParams.materialsReflectivity,
-                refractionRatio: envParams.materialsReflectionRatio,
+                shininess: envParams.materials.materialsShininess,
+                reflectivity: envParams.materials.materialsReflectivity,
+                refractionRatio: envParams.materials.materialsReflectionRatio,
                 // transparent: true,
                 combine: THREE.MultiplyOperation,
                 side: THREE.FrontSide,
@@ -847,7 +820,7 @@ const visualComponents = {
     initDefaultMaterials(withReflections) {
         if (!withReflections) {
             this.defaultMaterial = new THREE.MeshStandardMaterial({
-                color: envParams.materials.materialsColor,
+                color: this.envParams.materials.materialsColor,
             });
             this.debreDefaultMaterial = this.defaultMaterial.clone();
         } else {
@@ -863,23 +836,51 @@ const visualComponents = {
                 envMap = this.pmremGenerator.fromScene(this.scene).texture
             }
             this.defaultMaterial = new THREE.MeshPhysicalMaterial({
-                color: envParams.materials.materialsColor,
+                color: this.envParams.materials.materialsColor,
                 envMap: envMap,
-                envMapIntensity: envParams.materials.materialEnvMapIntensity,
-                clearcoat: envParams.materials.materialsClearcoat,
+                envMapIntensity: this.envParams.materials.materialEnvMapIntensity,
+                clearcoat: this.envParams.materials.materialsClearcoat,
                 clearcoatMap: envMap,
-                clearcoatRoughness: envParams.materials.materialsClearcoatRoughness,
+                clearcoatRoughness: this.envParams.materials.materialsClearcoatRoughness,
                 clearcoatRoughnessMap: envMap,
-                roughness: envParams.materials.materialsRoughness,
-                metalness: envParams.materials.materialsMetalness,
-                reflectivity: envParams.materials.materialsReflectivity,
-                refractionRatio: envParams.materials.materialsReflectionRatio,
+                roughness: this.envParams.materials.materialsRoughness,
+                metalness: this.envParams.materials.materialsMetalness,
+                reflectivity: this.envParams.materials.materialsReflectivity,
+                refractionRatio: this.envParams.materials.materialsReflectionRatio,
             });
             this.debreDefaultMaterial = this.defaultMaterial.clone();
         }
+
+        if (this.onDebug) {
+            const folderMaterials = this.gui.addFolder('Materials').close();
+            folderMaterials.add(this.envParams.materials, 'materialEnvMapIntensity', 0, 2, 0.1);
+            folderMaterials.addColor(this.envParams.materials, 'materialsColor');
+            folderMaterials.addColor(this.envParams.materials, 'materialsEmissiveColor');
+            folderMaterials.add(this.envParams.materials, 'materialEmissiveIntensity', 0, 2, 0.1);
+            folderMaterials.add(this.envParams.materials, 'materialsReflectivity', 0, 1, 0.1);
+            folderMaterials.add(this.envParams.materials, 'materialsReflectionRatio', 0, 0.98, 0.1);
+            folderMaterials.add(this.envParams.materials, 'materialsWireframe');
+            folderMaterials.add(this.envParams.materials, 'materialsFlatShading');
+
+            const folderPhongMaterials = this.gui.addFolder('Phong Materials').close();
+            folderPhongMaterials.add(this.envParams.materials, 'materialsShininess', 0, 500, 1);
+            // folderPhongMaterials.add(envParams.materials, 'phongMaterialsMetalness', 0, 10, 0.1);
+            folderPhongMaterials.addColor(this.envParams.materials, 'materialsSpecularColor');
+
+            const folderPhysicalMaterials = this.gui.addFolder('Mesh Physical Materials').close();
+            folderPhysicalMaterials.add(this.envParams.materials, 'materialsRoughness', 0, 1, 0.1);
+            folderPhysicalMaterials.add(this.envParams.materials, 'materialsMetalness', 0, 1, 0.1);
+            folderPhysicalMaterials.add(this.envParams.materials, 'materialsClearcoat', 0, 1, 0.1);
+            folderPhysicalMaterials.add(this.envParams.materials, 'materialsClearcoatRoughness', 0, 1, 0.1);
+            folderPhysicalMaterials.add(this.envParams.materials, 'materialBumpScale', 0, 1, 0.1);
+            folderPhysicalMaterials.add(this.envParams.materials, 'materialsDisplacementScale', -100, 100, 0.1);
+            folderPhysicalMaterials.add(this.envParams.materials, 'materialsDisplacementBias', -10, 10, 0.1);
+            // folderPhysicalMaterials.add(envParams, 'materialsTransmission', 0, 1, 0.1);
+        }
+
     },
 
-    // TODO: will need implimintation
+    // TODO: will need implementation
     loadMaterials(_data, displace, progressCallback, stateCallback) {
         return new Promise((resolve, reject) => {
             var materialsToLoad = [], loadCounter = 0, progressCounter = 0;
@@ -933,7 +934,7 @@ const visualComponents = {
                         // texture.wrapT = THREE.RepeatWrapping;
                         // texture.wrapS = THREE.RepeatWrapping;
                         _texture.mapping = THREE.EquirectangularReflectionMapping;
-                        materials[obj.id] = makeMaterial(envParams.onReflections, _texture, displace);
+                        materials[obj.id] = makeMaterial(envParams.materials.onReflections, _texture, displace);
                         count();
                     }, function (progress) {
                         console.log(progress);
@@ -1086,15 +1087,15 @@ const visualComponents = {
             case "pointlight":
                 light = new THREE.PointLight(new THREE.Color(lightConfig.color), lightConfig.intensity, lightConfig.distance, lightConfig.decay);
                 this.envParams[lightConfig.name].distance = lightConfig.distance;
-                if (this.envParams.debugLights) {
+                if (this.envParams.lights.debugLights) {
                     const pointLightHelper = new THREE.PointLightHelper(light, 10);
                     this.scene.add(pointLightHelper);
-                    this.envParams.lightHelpers.push(pointLightHelper);
+                    this.envParams.lights.lightHelpers.push(pointLightHelper);
                 }
                 break;
 
             case "spotlight":
-                let _spotLightAngle = lightConfig.lightAngle || this.envParams.spotLightAngle;
+                let _spotLightAngle = lightConfig.lightAngle || this.envParams.lights.spotLightAngle;
                 light = new THREE.SpotLight(new THREE.Color(lightConfig.color), lightConfig.intensity, lightConfig.distance, lightConfig.decay);
                 light.angle = lightConfig.spotLightAngle;
                 light.penumbra = 0.2;
@@ -1147,18 +1148,18 @@ const visualComponents = {
                 light.position.set(pos.x, pos.y, pos.z);
             }
 
-            light.power = lightConfig.power || this.envParams.lightsPower;
+            light.power = lightConfig.power || this.envParams.lights.lightsPower;
 
-            light.castShadow = this.envParams.castShadow;
-            light.shadow.mapSize.width = this.envParams.shadowMapResolution;
-            light.shadow.mapSize.height = this.envParams.shadowMapResolution;
-            light.shadow.camera.near = this.envParams.shadowNear;
-            light.shadow.camera.far = this.envParams.shadowFar; //from light distance
+            light.castShadow = this.envParams.lights.castShadow;
+            light.shadow.mapSize.width = this.envParams.lights.shadowMapResolution;
+            light.shadow.mapSize.height = this.envParams.lights.shadowMapResolution;
+            light.shadow.camera.near = this.envParams.lights.shadowNear;
+            light.shadow.camera.far = this.envParams.lights.shadowFar; //from light distance
             // light.shadow.camera.left = -500;
             // light.shadow.camera.bottom = -500;
             // light.shadow.camera.right = 500;
             // light.shadow.camera.top = 500;
-            light.shadow.focus = this.envParams.shadowFocus;
+            light.shadow.focus = this.envParams.lights.shadowFocus;
 
             // if (this.envParams.debugLights) {
             //     var shadowCameraHelper = new THREE.CameraHelper(light.shadow.camera);
@@ -1172,8 +1173,8 @@ const visualComponents = {
             //     camera.add(light);
             // }
 
-            this.envParams[lightConfig.name].castShadow = this.envParams.castShadow;
-            this.envParams[lightConfig.name].power = lightConfig.power || this.envParams.lightsPower;
+            this.envParams[lightConfig.name].castShadow = this.envParams.lights.castShadow;
+            this.envParams[lightConfig.name].power = lightConfig.power || this.envParams.lights.lightsPower;
             this.envParams[lightConfig.name].position = { x: light.position.x, y: light.position.y, z: light.position.z };
             this.envParams[lightConfig.name].shadow = {
                 camera: {
@@ -1206,185 +1207,6 @@ const visualComponents = {
         this.scene.add(light);
         this.envParams[lightConfig.name].light = light; //TODO: not really working with update. need to change
         return light;
-    },
-
-    addLight_old(type, name, _color, _pos, _intensity, _distance, lightAngle, target, isKinematic, power) {
-        var light, lightFolder;
-        envParams[name] = { visible: true, intensity: _intensity };
-        if (_color != null) {
-            envParams[name].color = _color;
-        }
-        if (this.onDebug) {
-            lightFolder = this.gui.addFolder(name).close();
-            lightFolder.add(envParams[name], 'visible');
-            lightFolder.add(envParams[name], 'intensity', 0, 2);
-            if (_color != null) {
-                lightFolder.addColor(envParams[name], 'color');
-            }
-        }
-        switch (type.toLowerCase()) {
-            case "ambient":
-                light = new THREE.AmbientLight(new THREE.Color(_color), _intensity);
-                scene.add(light);
-                break;
-
-            case "pointlight":
-                light = new THREE.PointLight(new THREE.Color(_color), _intensity, _distance);
-                envParams[name].distance = _distance;
-                if (this.onDebug) {
-                    lightFolder.add(envParams[name], 'distance', 0, 1500, 1);
-                }
-                break;
-
-            case "spotlight":
-                let _spotLightAngle = lightAngle || envParams.spotLightAngle;
-                light = new THREE.SpotLight(new THREE.Color(_color), _intensity, _distance);
-                light.angle = _spotLightAngle;
-                light.penumbra = 0.2;
-                light.decay = 1;
-                // light.target.position.set(center.x, center.y, center.z);
-                if (target) light.target = target;
-                scene.add(light.target);
-
-                envParams[name].distance = _distance;
-                envParams[name].angle = _spotLightAngle;
-                envParams[name].penumbra = 0.2;
-                if (this.onDebug) {
-                    lightFolder.add(envParams[name], 'angle', 0, Math.PI / 2, 0.01);
-                    lightFolder.add(envParams[name], 'penumbra', 0, 1, 0.01);
-                    lightFolder.add(envParams[name], 'distance', 0, 5000, 1);
-
-                    if (envParams.debugLights) {
-                        let lightHelper = new THREE.SpotLightHelper(light);
-                        scene.add(lightHelper);
-                        lightHelpers.push(lightHelper);
-                    }
-                }
-                break;
-
-            case "directionallight":
-                light = new THREE.DirectionalLight(new THREE.Color(_color), _intensity);
-                light.target.position.set(center.x, center.y, center.z);
-                scene.add(light.target);
-
-                if (envParams.debugLights) {
-                    let lightHelper = new THREE.DirectionalLightHelper(light);
-                    scene.add(lightHelper);
-                    lightHelpers.push(lightHelper);
-                }
-                break;
-
-            case "lightprobe":
-                // light = new THREE.LightProbe();
-                // light.copy(LightProbeGenerator.fromCubeTexture(scene));
-                console.log('Light probe is not implemented');
-                break;
-        }
-        light.name = name;
-
-        if (type.toLowerCase() === 'ambientlight') {
-            //
-        } else {
-            light.position.set(_pos.x, _pos.y, _pos.z);
-
-            light.castShadow = envParams.castShadow;
-            light.shadow.mapSize.width = envParams.shadowMapResolution;
-            light.shadow.mapSize.height = envParams.shadowMapResolution;
-            light.shadow.camera.near = envParams.shadowNear;
-            light.shadow.camera.far = envParams.shadowFar; //from light distance
-            // light.shadow.camera.left = -500;
-            // light.shadow.camera.bottom = -500;
-            // light.shadow.camera.right = 500;
-            // light.shadow.camera.top = 500;
-            light.shadow.focus = envParams.shadowFocus;
-
-            if (envParams.debugLights) {
-                var shadowCameraHelper = new THREE.CameraHelper(light.shadow.camera);
-                scene.add(shadowCameraHelper);
-                lightHelpers.push(shadowCameraHelper);
-            }
-
-            if (!isKinematic) {
-                scene.add(light);
-            } else {
-                camera.add(light);
-            }
-
-            envParams[name].castShadow = envParams.castShadow;
-            envParams[name].power = power || envParams.lightsPower;
-            envParams[name].position = { x: _pos.x, y: _pos.y, z: _pos.z };
-            envParams[name].shadow = {
-                camera: {
-                    far: light.shadow.camera.far,
-                    near: light.shadow.camera.near,
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    top: 0
-                },
-                focus: light.shadow.focus
-            };
-
-            if (this.onDebug) {
-                lightFolder.add(envParams[name], 'power', 0, 110000, 1);
-                lightFolder.add(envParams[name].position, 'x', -window.innerWidth, window.innerWidth, 1);
-                lightFolder.add(envParams[name].position, 'y', -100, 5000, 1);
-                lightFolder.add(envParams[name].position, 'z', -2000, 2000, 1);
-                lightFolder.add(envParams[name].shadow.camera, 'near', 0, 10, 0.1);
-                lightFolder.add(envParams[name].shadow.camera, 'far', 0, 5000, 1);
-                // lightFolder.add(envParams[name].shadow.camera, 'bottom', 0, 5000, 1);
-                // lightFolder.add(envParams[name].shadow.camera, 'top', 0, 5000, 1);
-                // lightFolder.add(envParams[name].shadow.camera, 'left', 0, 5000, 1);
-                // lightFolder.add(envParams[name].shadow.camera, 'right', 0, 5000, 1);
-                lightFolder.add(envParams[name].shadow, 'focus', 0, 1, 0.1);
-                lightFolder.add(envParams[name], 'castShadow');
-            }
-        }
-
-        lights[light.name] = light;
-        return light;
-    },
-
-    updateLight(name) {
-        if (name) {
-            let lightConfig = this.envParams[name];
-            for (let key in lightConfig.light) {
-                if (lightConfig[key] != null) {
-                    if (key === 'color') {
-                        let color = new THREE.Color(lightConfig.color).convertSRGBToLinear();
-                        // lightConfig[key] = color;
-                        lightConfig.light.color = color;
-                    }
-                    else if (key === 'position') {
-                        // lightConfig[key].x = this.envParams[lightConfig.name][key].x;
-                        // lightConfig[key].y = this.envParams[lightConfig.name][key].y;
-                        // lightConfig[key].z = this.envParams[lightConfig.name][key].z;
-                        lightConfig.light.position.set(
-                            lightConfig.position.x,
-                            lightConfig.position.y,
-                            lightConfig.position.z
-                        );
-                    }
-                    else if (key === 'shadow') {
-                        // lightConfig[key].camera.near = this.envParams[lightConfig.name][key].camera.near;
-                        // lightConfig[key].camera.far = this.envParams[lightConfig.name][key].camera.far;
-                        // lightConfig[key].focus = this.envParams[lightConfig.name][key].focus;
-                        // lightConfig[key].camera.updateProjectionMatrix();
-                        lightConfig.light.shadow.camera.near = lightConfig.shadow.camera.near;
-                        lightConfig.light.shadow.camera.far = lightConfig.shadow.camera.far;
-                        lightConfig.light.shadow.focus = lightConfig.shadow.focus;
-                        lightConfig.light.shadow.camera.updateProjectionMatrix();
-                    }
-                    else {
-                        // lightConfig[key] = this.envParams[lightConfig.name][key];
-                        lightConfig.light[key] = lightConfig[key];
-                    }
-                }
-            }
-            // if (lightConfig.type !== "AmbientLight") {
-            //     lightConfig.castShadow = this.envParams.castShadow;
-            // }
-        }
     },
 
     // Helpers
@@ -1596,102 +1418,6 @@ const visualComponents = {
         return node;
     },
 
-    updateGUI(guiController, updateMaterials) {
-        // onEnvironmentUpdate = true;
-
-        if (guiController != null) {
-            console.log('updateEnvironment:', guiController.controller.parent._title)
-        }
-
-        visualComponents.renderer.toneMappingExposure = Math.pow(visualComponents.envParams.rendererExposure, 4.0);
-        // renderer.toneMapping = THREE[envParams.toneMapping];
-        // renderer.gammaFactor = envParams.rendererGamma;
-        visualComponents.renderer.setClearColor(visualComponents.envParams.rendererBackgroundColor);
-
-        // scene.background = new THREE.Color(envParams.sceneBackgroundColor);
-
-        if (visualComponents.components.sun) {
-            // let _phi = THREE.MathUtils.degToRad(90 - (animations.initAnimation ? animations.startElevation : envParams.elevation));
-            let _phi = THREE.MathUtils.degToRad(90 - (visualComponents.envParams.components.sun.elevation));
-            let _theta = THREE.MathUtils.degToRad(visualComponents.envParams.components.sun.azimuth);
-            visualComponents.components.sun.setFromSphericalCoords(1, _phi, _theta);
-        }
-
-        if (visualComponents.components.sky) {
-            visualComponents.components.sky.visible = visualComponents.envParams.skyVisible;
-            let skyUniforms = visualComponents.components.sky.material.uniforms;
-            skyUniforms['turbidity'].value = visualComponents.envParams.turbidity;
-            skyUniforms['rayleigh'].value = visualComponents.envParams.rayleigh;
-            skyUniforms['mieCoefficient'].value = visualComponents.envParams.mieCoefficient;
-            skyUniforms['mieDirectionalG'].value = visualComponents.envParams.mieDirectionalG;
-            skyUniforms['sunPosition'].value.copy(visualComponents.components.sun);
-            let color = new THREE.Color(visualComponents.envParams.skyColor);
-            skyUniforms['color'].value = { x: color.r * 0.00001, y: color.g * 0.00001, z: color.b * 0.00001 };
-            // color = new THREE.Color(envParams.skyRayColor);
-            // skyUniforms['rayColor'].value = { x: color.r * 0.000001, y: color.g * 0.000001, z: color.b * 0.000001 };
-            // console.log(skyUniforms['color'].value);
-            // console.log(skyUniforms['rayColor'].value);
-            visualComponents.scene.environment = visualComponents.components.pmremGenerator.fromScene(visualComponents.components.sky).texture;
-        }
-
-        if (visualComponents.components.water) {
-            let waterUniforms = visualComponents.components.water.material.uniforms;
-            waterUniforms['sunDirection'].value.copy(visualComponents.components.sun).normalize();
-            waterUniforms['waterColor'].value = new THREE.Color(visualComponents.envParams.waterColor).convertSRGBToLinear();
-            waterUniforms['sunColor'].value = new THREE.Color(visualComponents.envParams.sunColor).convertSRGBToLinear();
-            waterUniforms['distortionScale'].value = visualComponents.envParams.waterDistortionScale;
-            visualComponents.components.water.visible = visualComponents.envParams.showWater
-            visualComponents.components.water.receiveShadow = visualComponents.envParams.receiveShadow;
-        }
-
-        // if (group) {
-        //     let _updateMaterials = updateMaterials ||
-        //         (guiController && (guiController.controller.parent._title === "Sky" || guiController.controller.parent._title === "Renderer"));
-        //     for (let i in group.children) {
-        //         group.children[i].castShadow = envParams.castShadow;
-        //         group.children[i].receiveShadow = envParams.receiveShadow;
-        //         let material = group.children[i].material;
-        //         if (Array.isArray(material)) {
-        //             for (let y in material) {
-        //                 updateMaterial(material[y], null, _updateMaterials);
-        //             }
-        //         } else {
-        //             updateMaterial(material, null, _updateMaterials);
-        //         }
-        //     }
-        // }
-
-        // let lightsKeys = Object.keys(visualComponents.envParams.lights);
-        for (let name in visualComponents.envParams.lights) {
-            // let i = lightsKeys[a];
-            visualComponents.updateLight(name);
-        }
-        if (visualComponents.envParams.lightHelpers) {
-            for (let i in visualComponents.envParams.lightHelpers) {
-                visualComponents.envParams.lightHelpers[i].update();
-            }
-        }
-
-        for (let name in visualComponents.components) {
-            if (visualComponents.components[name].guiUpdate) {
-                visualComponents.components[name].guiUpdate(guiController);
-            }
-        }
-
-        visualComponents.scene.fog = visualComponents.envParams.onFog ? new THREE.FogExp2(visualComponents.envParams.fogColor, visualComponents.envParams.fogDensity) : null;
-
-        if (visualComponents.updateGuiCallback) {
-            visualComponents.updateGuiCallback(guiController);
-        }
-
-        visualComponents.camera.fov = visualComponents.envParams.fov;
-        visualComponents.camera.far = visualComponents.envParams.far;
-        visualComponents.camera.updateProjectionMatrix();
-
-        // onEnvironmentUpdate = false; 
-
-    },
-
     // PostFX
 
     createComposer(renderTarget) {
@@ -1845,7 +1571,7 @@ const visualComponents = {
     updateMaterial(material, texture, updateEnvMap) {
         if (typeof material === 'object') {
             if (material.color) material.color = new THREE.Color(this.envParams.materials.materialsColor).convertSRGBToLinear();
-            material.fog = this.envParams.onFog;
+            material.fog = this.envParams.fog.active;
             material.wireframe = this.envParams.materials.materialsWireframe;
             material.flatShading = this.envParams.materials.materialsFlatShading;
             material.emissive = new THREE.Color(this.envParams.materials.materialsEmissiveColor).convertSRGBToLinear();
@@ -1865,7 +1591,7 @@ const visualComponents = {
                 material.displacementScale = this.envParams.materials.materialsDisplacementScale;
                 material.displacementBias = this.envParams.materials.materialsDisplacementBias;
                 if (updateEnvMap) {
-                    let envMap = sky ? pmremGenerator.fromScene(sky).texture : (terrain ? pmremGenerator.fromScene(terrain).texture : null);
+                    let envMap = sky ? this.pmremGenerator.fromScene(sky).texture : (terrain ? this.pmremGenerator.fromScene(terrain).texture : null);
                     material.envMap = envMap;
                     material.clearcoatMap = envMap;
                     material.clearcoatRoughnessMap = envMap;
@@ -1882,15 +1608,191 @@ const visualComponents = {
         }
     },
 
-    onWindowResize(width, height) {
-        this.camera.aspect = this.width / this.height;
-        this.camera.updateProjectionMatrix();
-        if (this.controls && this.controls.handleResize) {
-            this.controls.handleResize();
+    updateLight(name) {
+        if (name) {
+            let lightConfig = this.envParams[name];
+            for (let key in lightConfig.light) {
+                if (lightConfig[key] != null) {
+                    if (key === 'color') {
+                        let color = new THREE.Color(lightConfig.color).convertSRGBToLinear();
+                        // lightConfig[key] = color;
+                        lightConfig.light.color = color;
+                    }
+                    else if (key === 'position') {
+                        // lightConfig[key].x = this.envParams[lightConfig.name][key].x;
+                        // lightConfig[key].y = this.envParams[lightConfig.name][key].y;
+                        // lightConfig[key].z = this.envParams[lightConfig.name][key].z;
+                        lightConfig.light.position.set(
+                            lightConfig.position.x,
+                            lightConfig.position.y,
+                            lightConfig.position.z
+                        );
+                    }
+                    else if (key === 'shadow') {
+                        // lightConfig[key].camera.near = this.envParams[lightConfig.name][key].camera.near;
+                        // lightConfig[key].camera.far = this.envParams[lightConfig.name][key].camera.far;
+                        // lightConfig[key].focus = this.envParams[lightConfig.name][key].focus;
+                        // lightConfig[key].camera.updateProjectionMatrix();
+                        lightConfig.light.shadow.camera.near = lightConfig.shadow.camera.near;
+                        lightConfig.light.shadow.camera.far = lightConfig.shadow.camera.far;
+                        lightConfig.light.shadow.focus = lightConfig.shadow.focus;
+                        lightConfig.light.shadow.camera.updateProjectionMatrix();
+                    }
+                    else {
+                        // lightConfig[key] = this.envParams[lightConfig.name][key];
+                        lightConfig.light[key] = lightConfig[key];
+                    }
+                }
+            }
+            // if (lightConfig.type !== "AmbientLight") {
+            //     lightConfig.castShadow = this.envParams.castShadow;
+            // }
         }
-        this.renderer.setSize(width, height);
-        this.renderer.setPixelRatio(window.devicePixelRatio);
-        if (this.composer) this.composer.setSize(width, height);
+    },
+
+    updateGUI(guiController, updateMaterials) {
+        // onEnvironmentUpdate = true;
+
+        if (guiController != null) {
+            console.log('updateEnvironment:', guiController.controller.parent._title)
+        }
+
+        const toneMapping = THREE[visualComponents.envParams.renderer.toneMapping];
+        if (toneMapping) {
+            visualComponents.renderer.toneMapping = toneMapping;
+        }
+        visualComponents.renderer.toneMappingExposure = Math.pow(visualComponents.envParams.renderer.rendererExposure, 4.0);
+        visualComponents.renderer.gammaFactor = visualComponents.envParams.renderer.rendererGamma;
+        visualComponents.renderer.setClearColor(visualComponents.envParams.renderer.rendererBackgroundColor);
+
+        // scene.background = new THREE.Color(envParams.scene.sceneBackgroundColor);
+
+        if (visualComponents.envParams.fog.active) {
+            visualComponents.scene.fog = new THREE.Fog(
+                new THREE.Color(visualComponents.envParams.fog.color),
+                visualComponents.envParams.fog.near,
+                visualComponents.envParams.fog.far
+            );
+        } else {
+            visualComponents.scene.fog = null;
+        }
+
+        if (visualComponents.components.sun) {
+            // let _phi = THREE.MathUtils.degToRad(90 - (animations.initAnimation ? animations.startElevation : envParams.elevation));
+            let _phi = THREE.MathUtils.degToRad(90 - (visualComponents.envParams.components.sun.elevation));
+            let _theta = THREE.MathUtils.degToRad(visualComponents.envParams.components.sun.azimuth);
+            visualComponents.components.sun.setFromSphericalCoords(1, _phi, _theta);
+        }
+
+        if (visualComponents.envParams.components.sky) {
+            visualComponents.components.sky.visible = visualComponents.envParams.components.sky.visible;
+            let skyUniforms = visualComponents.components.sky.material.uniforms;
+            skyUniforms['turbidity'].value = visualComponents.envParams.components.sky.turbidity;
+            skyUniforms['rayleigh'].value = visualComponents.envParams.components.sky.rayleigh;
+            skyUniforms['mieCoefficient'].value = visualComponents.envParams.components.sky.mieCoefficient;
+            skyUniforms['mieDirectionalG'].value = visualComponents.envParams.components.sky.mieDirectionalG;
+            skyUniforms['sunPosition'].value.copy(visualComponents.components.sun);
+            // let color = new THREE.Color(visualComponents.envParams.skyColor);
+            // skyUniforms['color'].value = { x: color.r * 0.00001, y: color.g * 0.00001, z: color.b * 0.00001 };
+            // color = new THREE.Color(envParams.skyRayColor);
+            // skyUniforms['rayColor'].value = { x: color.r * 0.000001, y: color.g * 0.000001, z: color.b * 0.000001 };
+            // console.log(skyUniforms['color'].value);
+            // console.log(skyUniforms['rayColor'].value);
+            visualComponents.scene.environment = visualComponents.pmremGenerator.fromScene(visualComponents.components.sky).texture;
+        }
+
+        if (visualComponents.components.water) {
+            let waterUniforms = visualComponents.components.water.material.uniforms;
+            waterUniforms['sunDirection'].value.copy(visualComponents.components.sun).normalize();
+            waterUniforms['waterColor'].value = new THREE.Color(visualComponents.envParams.components.water.waterColor).convertSRGBToLinear();
+            waterUniforms['sunColor'].value = new THREE.Color(visualComponents.envParams.components.sun.color).convertSRGBToLinear();
+            waterUniforms['distortionScale'].value = visualComponents.envParams.components.water.waterDistortionScale;
+            visualComponents.components.water.visible = visualComponents.envParams.components.water.visible;
+            visualComponents.components.water.receiveShadow = visualComponents.envParams.lights.receiveShadow;
+        }
+
+        // if (group) {
+        //     let _updateMaterials = updateMaterials ||
+        //         (guiController && (guiController.controller.parent._title === "Sky" || guiController.controller.parent._title === "Renderer"));
+        //     for (let i in group.children) {
+        //         group.children[i].castShadow = envParams.castShadow;
+        //         group.children[i].receiveShadow = envParams.receiveShadow;
+        //         let material = group.children[i].material;
+        //         if (Array.isArray(material)) {
+        //             for (let y in material) {
+        //                 updateMaterial(material[y], null, _updateMaterials);
+        //             }
+        //         } else {
+        //             updateMaterial(material, null, _updateMaterials);
+        //         }
+        //     }
+        // }
+
+        // let lightsKeys = Object.keys(visualComponents.envParams.lights);
+        for (let name in visualComponents.envParams.lights.lights) {
+            // let i = lightsKeys[a];
+            visualComponents.updateLight(name);
+        }
+        if (visualComponents.envParams.lights.lightHelpers) {
+            for (let i in visualComponents.envParams.lights.lightHelpers) {
+                visualComponents.envParams.lights.lightHelpers[i].update();
+            }
+        }
+
+        for (let name in visualComponents.components) {
+            if (visualComponents.components[name].guiUpdate) {
+                visualComponents.components[name].guiUpdate(guiController);
+            }
+        }
+
+        if (visualComponents.updateGuiCallback) {
+            visualComponents.updateGuiCallback(guiController);
+        }
+
+        visualComponents.camera.fov = visualComponents.envParams.camera.fov;
+        visualComponents.camera.far = visualComponents.envParams.camera.far;
+        visualComponents.camera.updateProjectionMatrix();
+
+        visualComponents.controls.enableDamping = visualComponents.envParams.camera.enableDamping;
+        visualComponents.controls.dampingFactor = visualComponents.envParams.camera.dampingFactor;
+        visualComponents.controls.zoomSpeed = visualComponents.envParams.camera.zoomSpeed;
+        visualComponents.controls.minDistance = visualComponents.envParams.camera.minDistance || 0;
+        visualComponents.controls.maxDistance = visualComponents.envParams.camera.maxDistance || Infinity;
+        visualComponents.controls.enableRotate = visualComponents.envParams.camera.enableControlsRotation;
+        visualComponents.controls.autoRotateSpeed = visualComponents.envParams.camera.cameraRotationSpeed;
+        visualComponents.controls.autoRotate = visualComponents.envParams.camera.enableCameraRotation;
+
+        // onEnvironmentUpdate = false; 
+
+    },
+
+    updateLoadingStates(url, state) {
+        this.loadingStates[url] = {
+            url: url,
+            loaded: state
+        }
+        if (state) {
+            this.loadingStates.loaded++;
+            this.loadingStates.progress = this.loadingStates.loaded * 100 / this.loadingStates.destination;
+        }
+        if (this.uiFilesDownloadCallback) {
+            this.uiFilesDownloadCallback(this.loadingStates);
+        }
+    },
+
+    //
+
+    onWindowResize(width, height) {
+        if (this.renderer && this.camera) {
+            this.camera.aspect = this.width / this.height;
+            this.camera.updateProjectionMatrix();
+            if (this.controls && this.controls.handleResize) {
+                this.controls.handleResize();
+            }
+            this.renderer.setSize(width, height);
+            this.renderer.setPixelRatio(window.devicePixelRatio);
+            if (this.composer) this.composer.setSize(width, height);
+        }
     }
 }
 

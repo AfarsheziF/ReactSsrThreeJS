@@ -17,50 +17,45 @@
         "y": 0,
         "z": -4500000
     },
-    "zoomValue": 5,
+    "zoomValue": 0.01,
+    "zoomSpeed": 0.01,
     "sceneBackgroundColor": "#000000",
     "controlsEnableRotate": true,
     "blockInteraction": false,
     "cameraRotation": true,
     "cameraRotationSpeed": 0.1,
-    "materialsColor": "#ffffff",
-    "materialDebreeColor": "#ffffff",
-    "materialsCombine": 1,
-    "materialsRoughness": 1,
-    "materialsMetalness": 1,
-    "materialsEmissiveColor": "#ffffff",
-    "materialEmissiveIntensity": 0,
-    "materialsWireframe": false,
-    "materialsFlatShading": false,
-    "materialsSpecularColor": "#ffffff",
-    "materialsShininess": 200,
-    "materialsReflectivity": 0.8,
-    "materialsReflectionRatio": 0.98,
-    "materialsClearcoat": 1,
-    "materialsClearcoatRoughness": 1,
-    "materialsTransmission": 0,
-    "materialBumpScale": 0.3,
-    "materialsDisplacementScale": 3,
-    "materialsDisplacementBias": 0,
-    "phongMaterialsMetalness": 1,
-    "materialEnvMapIntensity": 1,
+    "materials": {
+        "materialsColor": "#ffffff",
+        "materialDebreeColor": "#ffffff",
+        "materialsCombine": 1,
+        "materialsRoughness": 1,
+        "materialsMetalness": 1,
+        "materialsEmissiveColor": "#ffffff",
+        "materialEmissiveIntensity": 0,
+        "materialsWireframe": false,
+        "materialsFlatShading": false,
+        "materialsSpecularColor": "#ffffff",
+        "materialsShininess": 200,
+        "materialsReflectivity": 0.8,
+        "materialsReflectionRatio": 0.98,
+        "materialsClearcoat": 1,
+        "materialsClearcoatRoughness": 1,
+        "materialsTransmission": 0,
+        "materialBumpScale": 0.3,
+        "materialsDisplacementScale": 3,
+        "materialsDisplacementBias": 0,
+        "phongMaterialsMetalness": 1,
+        "materialEnvMapIntensity": 1
+    },
     "onReflections": true,
     "lights": {
         "ambientLight": {
             "color": "#ffffff",
             "intensity": 0.1
         },
-        "pointLight": {
-            "color": "#ffffff",
-            "position": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-            },
-            "intensity": 2,
-            "distance": 0,
-            "decay": 0,
-            "power": 150
+        "directionalLight": {
+            "color": "#ffa011",
+            "intensity": 0.1
         }
     },
     "lightHelpers": [],
@@ -79,6 +74,7 @@
     "shadowFocus": 1,
     "ambientColor": "#ffffff",
     "onCameraRotation": true,
+    "onFog": false,
     "components": {
         "blobPlanet": {
             "width": 1024,
@@ -122,9 +118,33 @@
             },
             "gradientColorStrength": 0.5
         },
-        "planets": {
-            "materialsType": "MeshPhysicalMaterial",
-            "materialsType_mobile": "MeshPhongMaterial"
+        "water": {
+            "visible": true,
+            "waterColor": "#7d7d7d",
+            "waterDistortionScale": 10,
+            "waterSpeed": 0.014,
+            "sunColor": "#ffffff",
+            "position": {
+                "y": -100
+            },
+            "rotation": {
+                "x": 2
+            }
+        },
+        "sky": {
+            "turbidity": 20,
+            "rayleigh": 0,
+            "mieCoefficient": 0.002,
+            "mieDirectionalG": 0.905,
+            "visible": true,
+            "skyRayColor": "#1e1429",
+            "skyColor": "#1e1429"
+        },
+        "sun": {
+            "elevation": 35,
+            "azimuth": 0,
+            "color": "#ffffff",
+            "exposure": 1
         }
     }
 }

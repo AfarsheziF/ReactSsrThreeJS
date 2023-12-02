@@ -1,4 +1,4 @@
-import * as THREE from "../../../../../../vendor_mods/three/build/three.module.js";
+import * as THREE from "../../../../../../vendor_mods/three/build/three.module";
 import { GPUComputationRenderer } from '../../../../../../vendor_mods/three/examples/jsm/misc/GPUComputationRenderer.js';
 
 import BlobShaderFS from "./BlobShaderFS.js";

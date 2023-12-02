@@ -79,7 +79,7 @@ class SceneHolder extends React.Component {
                     textController.addSection(key, data.texts[key]);
                 }
                 that.setState({
-                    onCameraRotation: data.envParams.onCameraRotation,
+                    onCameraRotation: data.envParams.camera.enableCameraRotation,
                     sceneSettings: settingsController.processInputs(data.settings),
                     ...data
                 });
@@ -569,7 +569,7 @@ class SceneHolder extends React.Component {
                 {this.state.sceneStared && this.state.showUI && this.getBottomMenuView()}
                 {/* {this.state.sceneStared && this.state.showUI && this.getUI()} */}
 
-                {/* <ResponsiveDialog
+                <ResponsiveDialog
                     dialogObj={this.state.dialogObj}
                     onClose={() => {
                         this.setState({ openDialog: false, dialogObj: null });
@@ -579,7 +579,7 @@ class SceneHolder extends React.Component {
                     size={this.state.dialogObj && this.state.dialogObj.size ? this.state.dialogObj.size : 'md'}
                 />
 
-                <LoadingDialog
+                {/* <LoadingDialog
                     visible={!this.state.sceneStared || this.state.showLoadingDialog}
                     animateProgress={true}
                     dialogObj={this.state.loadingDialogObj}

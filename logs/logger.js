@@ -1,9 +1,10 @@
-//Queue version 23.11.21. Logger in logs dir
+//ReactSsrThreeJs version. 2.12.23
 
 import fs from 'fs';
 import moment from 'moment';
 
 import emailController from "../utils/emailController";
+import serverUtils from '../utils/serverUtils';
 
 const logger = {
 
@@ -15,54 +16,73 @@ const logger = {
     sendErrorEmails: false,
     socketClients: [],
     io: null,
-    dirname: __dirname,
+    dirname: null,
 
     init(logsName, logsReceiver, emailIdentifier, hostState) {
+        const that = this;
+        this.dirname = global.rootDir + '/logs/' + global.hostState + '/';
         return new Promise((resolve, reject) => {
             logger.logsName = logsName;
             logger.logsReceiver = logsReceiver;
             logger.emailIdentifier = `[ ${emailIdentifier} ] [ ${hostState} ]`;
             logger.sendErrorEmails = process.env.sendErrorEmails === 'true' || hostState === 'production';
+
             if (global.scheduleAnalytics) {
                 global.scheduleAnalytics.errors.logErrors = [];
             }
-            var today = new Date();
-            logger.fileName = logger.logsName + "_" + today.getDate() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear() + "_" + `${today.getHours()}-${today.getMinutes()}`;
-            console.log(`Logger init: ${logger.fileName}. Dirname: ${this.dirname}`);
 
-            if (this.dirname.indexOf('/logs') < 0) {
-                this.dirname = global.rootDir + '/logs/'
+            const today = new Date();
+            logger.fileName = logger.logsName + "_" + today.getDate() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear() + "_" + `${today.getHours()}-${today.getMinutes()}`;
+            console.log(`Logger init: ${logger.fileName}. Dirname: ${that.dirname}`);
+
+            // Clear dev logs
+            if (global.__DEV__) {
+                serverUtils.emptyDir('/logs/development', 'holder.txt').then(
+                    res => {
+                        console.log("Development logs deleted");
+                        initLogFile();
+                    },
+                    e => {
+                        console.log(e);
+                        initLogFile();
+                    }
+                )
+            } else {
+                initLogFile();
             }
 
-            fs.readFile(this.dirname + "/" + global.hostState + "/" + logger.fileName + ".json", (e, logFile) => {
-                if (e) {
-                    console.log("Log file was not found. Creating new file");
-                    let newLog = { date: new Date(), logs: [] };
-                    newLog.logs.push({ type: "init", date: new Date(), log: "Logger init" });
-                    saveNewLogFile(newLog);
-                } else {
-                    console.log("Log file found. parsing data");
-                    if (logFile.byteLength > 0) {
-                        try {
-                            logFile = JSON.parse(logFile);
-                            logFile.logs.push({ type: "init", date: new Date(), log: "Logger init" });
-                            console.log("Log file parsed. saving current file");
-                            saveNewLogFile(logFile);
-                        }
-                        catch (e2) {
+            function initLogFile() {
+                serverUtils.readFile("/logs/" + global.hostState + '/' + logger.fileName + ".json").then(
+                    logFile => {
+                        console.log("Log file found. parsing data");
+                        if (logFile.byteLength > 0) {
+                            try {
+                                logFile = JSON.parse(logFile);
+                                logFile.logs.push({ type: "init", date: new Date().toString(), log: "Logger init" });
+                                console.log("Log file parsed. saving current file");
+                                saveNewLogFile(logFile);
+                            }
+                            catch (e2) {
+                                let newLog = { date: new Date(), logs: [] };
+                                newLog.logs.push({ type: "init", date: new Date().toString(), log: "Logger init" });
+                                console.log("Log file read error. Creating new");
+                                saveNewLogFile(newLog);
+                            }
+                        } else {
+                            console.log("Log file found invalid. Creating new");
                             let newLog = { date: new Date(), logs: [] };
-                            newLog.logs.push({ type: "init", date: new Date(), log: "Logger init" });
-                            console.log("Log file read error. Creating new");
+                            newLog.logs.push({ type: "init", date: new Date().toString(), log: "Logger init" });
                             saveNewLogFile(newLog);
                         }
-                    } else {
-                        console.log("Log file found invalid. Creating new");
+                    },
+                    e => {
+                        console.log("Log file was not found. Creating new file");
                         let newLog = { date: new Date(), logs: [] };
-                        newLog.logs.push({ type: "init", date: new Date(), log: "Logger init" });
+                        newLog.logs.push({ type: "init", date: new Date().toString(), log: "Logger init" });
                         saveNewLogFile(newLog);
                     }
-                }
-            });
+                );
+            }
 
             function saveNewLogFile(logFile) {
                 logger.saveToLogFile(logFile).then(
@@ -74,25 +94,26 @@ const logger = {
                     }
                 )
             }
+
         });
     },
 
     log(line, type) {
-        var date = new Date();
+        let date = new Date();
         date = moment(date).format('HH:mm:ss');
         console.log(date, line);
-        var logObj = { type: type ? type : "log", date: new Date(), log: line };
+        const logObj = { type: type ? type : "log", date: new Date(), log: line };
         if (logger.currentLog && logger.currentLog.logs) logger.currentLog.logs.push(logObj);
         logger.saveToLogFile(logger.currentLog);
 
-        for (var i in logger.socketClients) {
+        for (let i in logger.socketClients) {
             logger.io.to(logger.socketClients[i]).emit('log', logObj);
         }
     },
 
     info(line) {
         console.info(line);
-        var date = new Date();
+        const date = new Date();
         console.log(moment(date).format('HH:mm:ss') + " " + line);
     },
 
@@ -104,14 +125,14 @@ const logger = {
         let message;
 
         console.error(moment(date).format('HH:mm:ss') + " " + (e.message || e));
-        if (logger.currentLog && logger.currentLog.logs) logger.currentLog.logs.push({ type: "error", date: new Date(), log: e });
+        if (logger.currentLog && logger.currentLog.logs) logger.currentLog.logs.push({ type: "error", date: new Date().toString(), log: e });
         logger.saveToLogFile(logger.currentLog);
         if (global.scheduleAnalytics &&
             global.scheduleAnalytics.errors &&
             global.scheduleAnalytics.errors.logErrors) {
             global.scheduleAnalytics.errors.logErrors.push({
                 name: 'Log error',
-                createdAt: new Date(),
+                createdAt: new Date().toString(),
                 message: e.message || e,
                 object: obj,
                 stack: new Error().stack
@@ -127,16 +148,17 @@ const logger = {
         if (this.sendErrorEmails) {
             this.sendLogEmail(e, message, obj);
         }
-        for (var i in logger.socketClients) {
+        for (let i in logger.socketClients) {
             logger.io.to(logger.socketClients[i]).emit('errorLog', e);
         }
     },
 
     saveToLogFile(_log) {
+        const that = this;
         return new Promise((resolve, reject) => {
             logger.currentLog = _log;
             let data = JSON.stringify(logger.currentLog);
-            let filePath = this.dirname + "/" + global.hostState + "/" + logger.fileName + ".json";
+            let filePath = that.dirname + "/" + logger.fileName + ".json";
             if (!data) {
                 data = "log file was invalid"
             }
@@ -155,8 +177,9 @@ const logger = {
     },
 
     getTodayLog() {
+        const that = this;
         return new Promise((resolve, reject) => {
-            fs.readFile(logger.dirname + "/" + global.hostState + "/" + logger.fileName + ".json", (e, log) => {
+            fs.readFile(that.dirname + "/" + that.fileName + ".json", (e, log) => {
                 if (e) {
                     reject(e);
                 } else {
@@ -167,7 +190,7 @@ const logger = {
     },
 
     sendLogEmail(message, shortTitle, parseObj) {
-        var emailTitle = "New error log",
+        const emailTitle = "New error log",
             subject = emailTitle + " " + this.emailIdentifier + " " + shortTitle;
 
         if (parseObj && parseObj.id) {
@@ -185,9 +208,8 @@ const logger = {
     },
 
     sendDataTo(dest, data) {
-        var that = this;
-        for (var i in that.socketClients) {
-            that.io.to(that.socketClients[i]).emit(dest, data);
+        for (let i in this.socketClients) {
+            this.io.to(this.socketClients[i]).emit(dest, data);
         }
     }
 }
