@@ -90,6 +90,7 @@ const AppRouter = (props) => {
                 element={
                     <SceneHolder
                         onDebug={props.appState.onDebug}
+                        appConfig={props.appConfig}
                     />
                 }
             />

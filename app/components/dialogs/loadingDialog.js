@@ -116,4 +116,5 @@ class LoadingDialog extends React.Component {
 
 }
 
-export default styled(LoadingDialog);
+// export default styled(LoadingDialog);
+export default (LoadingDialog);

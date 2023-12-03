@@ -254,101 +254,113 @@ export default class Scene extends React.Component {
         if (visualComponents.controls) visualComponents.controls.enabled = interactionState;
     }
 
-    // moveCamera = (to, duration, _onComplete, lookAt) => {
-    //     if (!visualComponents.camera.position.equals(to)) {
-    //         blockInteraction = true;
-    //         new TWEEN.Tween(visualComponents.camera.position)
-    //             .to(to, duration || 3000)
-    //             .easing(TWEEN.Easing.Sinusoidal.InOut)
-    //             .onUpdate(function (value) {
-    //                 visualComponents.camera.position.copy(value);
-    //                 if (lookAt) {
-    //                     visualComponents.camera.lookAt(lookAt);
-    //                 }
-    //             })
-    //             .onComplete(function () {
-    //                 onComplete();
-    //             })
-    //             .start();
-    //     } else {
-    //         onComplete();
-    //     }
+    moveCamera = (to, duration, _onComplete, lookAt) => {
+        if (!visualComponents.camera.position.equals(to)) {
+            blockInteraction = true;
+            new TWEEN.Tween(visualComponents.camera.position)
+                .to(to, duration || 3000)
+                .easing(TWEEN.Easing.Sinusoidal.InOut)
+                .onUpdate(function (value) {
+                    visualComponents.camera.position.copy(value);
+                    if (lookAt) {
+                        visualComponents.camera.lookAt(lookAt);
+                    }
+                })
+                .onComplete(function () {
+                    onComplete();
+                })
+                .start();
+        } else {
+            onComplete();
+        }
 
-    //     function onComplete() {
-    //         blockInteraction = false;
-    //         visualComponents.camera.updateProjectionMatrix();
-    //         if (_onComplete) _onComplete();
-    //     }
-    // }
+        function onComplete() {
+            blockInteraction = false;
+            visualComponents.camera.updateProjectionMatrix();
+            if (_onComplete) _onComplete();
+        }
+    }
 
-    // rotateCamera = (position, duration, _onComplete) => {
-    //     // backup original rotation
-    //     const startRotation = visualComponents.camera.quaternion.clone();
+    rotateCamera = (position, duration, _onComplete) => {
+        // backup original rotation
+        const startRotation = visualComponents.camera.quaternion.clone();
 
-    //     // final rotation (with lookAt)
-    //     visualComponents.camera.lookAt(position);
-    //     const endRotation = visualComponents.camera.quaternion.clone();
+        // final rotation (with lookAt)
+        visualComponents.camera.lookAt(position);
+        const endRotation = visualComponents.camera.quaternion.clone();
 
-    //     // revert to original rotation
-    //     visualComponents.camera.quaternion.copy(startRotation);
+        // revert to original rotation
+        visualComponents.camera.quaternion.copy(startRotation);
 
-    //     // Tween
-    //     new TWEEN.Tween
-    //         (visualComponents.camera.quaternion)
-    //         .easing(TWEEN.Easing.Sinusoidal.InOut)
-    //         .to(endRotation, duration || 3000)
-    //         .start()
-    //         .onComplete(function () {
-    //             // visualComponents.camera.lookAt(position);
-    //             // visualComponents.camera.updateProjectionMatrix();
-    //             if (_onComplete) {
-    //                 _onComplete();
-    //             }
-    //         });
-    // }
+        // Tween
+        new TWEEN.Tween
+            (visualComponents.camera.quaternion)
+            .easing(TWEEN.Easing.Sinusoidal.InOut)
+            .to(endRotation, duration || 3000)
+            .start()
+            .onComplete(function () {
+                // visualComponents.camera.lookAt(position);
+                // visualComponents.camera.updateProjectionMatrix();
+                if (_onComplete) {
+                    _onComplete();
+                }
+            });
+    }
 
-    // zoomCamera = type => {
-    //     const that = this;
-    //     let zoomValue = 0.01; //envParams.zoomValue;
-    //     let cameraPos = visualComponents.camera.position.clone();
-    //     let allowZoomIn = true;
-    //     let allowZoomOut = true;
-    //     if (visualComponents.controls.minDistance > 0) {
-    //         allowZoomIn = cameraPos.z < visualComponents.controls.minDistance - zoomValue;
-    //     }
-    //     if (visualComponents.controls.maxDistance !== Infinity) {
-    //         allowZoomOut = cameraPos.z > visualComponents.controls.maxDistance + zoomValue;
-    //     }
+    zoomCamera = type => {
+        const that = this;
+        let zoomValue = 0.01; //envParams.zoomValue;
+        let cameraPos = visualComponents.camera.position.clone();
+        let allowZoomIn = true;
+        let allowZoomOut = true;
+        if (visualComponents.controls.minDistance > 0) {
+            allowZoomIn = cameraPos.z < visualComponents.controls.minDistance - zoomValue;
+        }
+        if (visualComponents.controls.maxDistance !== Infinity) {
+            allowZoomOut = cameraPos.z > visualComponents.controls.maxDistance + zoomValue;
+        }
 
-    //     this.props.onZoomCallback(allowZoomIn, allowZoomOut);
-    //     if ((type === 'in' && allowZoomIn) || (type === 'out' && allowZoomOut)) {
-    //         // Dolly in/out
-    //         // let zoomDistance = Number(cameraPos.distanceTo(visualComponents.controls.target)),
-    //         // let zoomDistance = 1,
-    //         //     currDistance = cameraPos.length(),
-    //         //     factor = zoomDistance / currDistance;
+        this.props.onZoomCallback(allowZoomIn, allowZoomOut);
+        if ((type === 'in' && allowZoomIn) || (type === 'out' && allowZoomOut)) {
+            // Dolly in/out
+            // let zoomDistance = Number(cameraPos.distanceTo(visualComponents.controls.target)),
+            // let zoomDistance = 1,
+            //     currDistance = cameraPos.length(),
+            //     factor = zoomDistance / currDistance;
 
-    //         // cameraPos.x *= factor;
-    //         // cameraPos.y *= factor;
-    //         // cameraPos.z *= factor;
+            // cameraPos.x *= factor;
+            // cameraPos.y *= factor;
+            // cameraPos.z *= factor;
 
-    //         // this.moveCamera(cameraPos, 250, function () {
-    //         //     that.props.onZoomCallback(allowZoomIn, allowZoomOut);
-    //         // });
-    //         if (type === 'in') {
-    //             for (let i = 0; i < zoomValue; i++) {
-    //                 visualComponents.controls.dollyIn();
-    //             }
-    //         } else {
-    //             for (let i = 0; i < zoomValue; i++) {
-    //                 visualComponents.controls.dollyOut();
-    //             }
-    //         }
-    //     }
-    //     else {
-    //         this.props.onZoomCallback(allowZoomIn, allowZoomOut);
-    //     }
-    // }
+            // this.moveCamera(cameraPos, 250, function () {
+            //     that.props.onZoomCallback(allowZoomIn, allowZoomOut);
+            // });
+            if (type === 'in') {
+                for (let i = 0; i < zoomValue; i++) {
+                    visualComponents.controls.dollyIn();
+                }
+            } else {
+                for (let i = 0; i < zoomValue; i++) {
+                    visualComponents.controls.dollyOut();
+                }
+            }
+        }
+        else {
+            this.props.onZoomCallback(allowZoomIn, allowZoomOut);
+        }
+    }
+
+    updateSettings(key, value) {
+        switch (key) {
+            case "environment":
+                visualComponents.components.sky.visible = value;
+                break;
+
+            default:
+                console.log("updateSettings. Unhandled case: " + key);
+                break;
+        }
+    }
 
     //
 

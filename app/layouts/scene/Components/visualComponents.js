@@ -35,7 +35,7 @@ import Protoplanet from './Shaders/Protoplanet/protoplanet';
 
 import utils from '../../../utils/utils';
 
-var objLoader, textureLoader, fileLoader, fontLoader, font, loadingManager;
+var font;
 
 const visualComponents = {
     width: null,
@@ -52,6 +52,11 @@ const visualComponents = {
     composer: null,
     pmremGenerator: null,
 
+    textureLoader: null,
+    objLoader: null,
+    fileLoader: null,
+    fontLoader: null,
+
     components: null,
     envParams: null,
 
@@ -66,9 +71,9 @@ const visualComponents = {
         this.sceneElement = sceneElement;
         this.uiFilesDownloadCallback = uiFilesDownloadCallback;
         // loadingManager = new THREE.LoadingManager();
-        textureLoader = new THREE.TextureLoader();
-        fileLoader = new THREE.FileLoader();
-        fontLoader = new FontLoader();
+        this.textureLoader = new THREE.TextureLoader();
+        this.fileLoader = new THREE.FileLoader();
+        this.fontLoader = new FontLoader();
 
         this.loadingStates = {
             destination: 0,
@@ -88,7 +93,7 @@ const visualComponents = {
         //     console.log('Loading error', e);
         // };
 
-        fontLoader.load('fonts/gentilis_bold.typeface.json',
+        this.fontLoader.load('fonts/gentilis_bold.typeface.json',
             function (_font) {
                 font = _font;
             });
@@ -98,8 +103,10 @@ const visualComponents = {
             this.gui = new GUI().close();
             this.gui.onChange(this.updateGUI);
             this.gui.add({
-                Hide: () =>
-                    document.getElementsByClassName("lil-gui")[0].style.display = 'none'
+                Hide: () => {
+                    document.getElementsByClassName("lil-gui")[0].style.display = 'none';
+                    this.stats.showPanel();
+                }
             }, 'Hide');
             this.gui.add({
                 Download: () =>
@@ -324,9 +331,9 @@ const visualComponents = {
                     this.components.water = new Water(
                         waterGeometry,
                         {
-                            textureWidth: utils.isMobile ? 512 : 1024,
-                            textureHeight: utils.isMobile ? 512 : 1024,
-                            waterNormals: new THREE.TextureLoader().load('public/images/waternormals.jpg',
+                            textureWidth: utils.isMobile ? this.envParams.components.water.scale / 2 : this.envParams.components.water.scale,
+                            textureHeight: utils.isMobile ? this.envParams.components.water.scale / 2 : this.envParams.components.water.scale,
+                            waterNormals: this.textureLoader.load('public/images/water/waternormals.jpg',
                                 function (_texture) {
                                     _texture.wrapS = _texture.wrapT = THREE.RepeatWrapping;
                                 }),
@@ -346,6 +353,15 @@ const visualComponents = {
                     if (this.onDebug) {
                         const folderWater = this.gui.addFolder('Water').close();
                         folderWater.add(this.envParams.components.water, 'visible');
+                        folderWater.add(this.envParams.components.water, 'size');
+                        folderWater.add(this.envParams.components.water, 'normalMap', this.envParams.components.water.normalMap)
+                            .onChange(val => {
+                                visualComponents.textureLoader.load(val,
+                                    function (_texture) {
+                                        _texture.wrapS = _texture.wrapT = THREE.RepeatWrapping;
+                                        visualComponents.components.water.material.uniforms['normalSampler'].value = _texture;
+                                    });
+                            });
                         folderWater.addColor(this.envParams.components.water, 'waterColor');
                         folderWater.add(this.envParams.components.water, 'waterDistortionScale', 0, 20, 0.1);
                         folderWater.add(this.envParams.components.water, 'waterSpeed', 0, 0.1, 0.0001);
@@ -443,10 +459,10 @@ const visualComponents = {
                     object.type = 'model';
                     if (textureUrl) {
                         Promise.all([
-                            textureLoader.load(textureUrl),
-                            (bumpUrl ? textureLoader.load(bumpUrl) : null),
-                            (normalMapUrl ? textureLoader.load(normalMapUrl) : null),
-                            (displacementUrl ? textureLoader.load(displacementUrl) : null)
+                            that.textureLoader.load(textureUrl),
+                            (bumpUrl ? that.textureLoader.load(bumpUrl) : null),
+                            (normalMapUrl ? that.textureLoader.load(normalMapUrl) : null),
+                            (displacementUrl ? that.textureLoader.load(displacementUrl) : null)
                         ]).then(
                             function (res) {
                                 object.traverse(function (child) {
@@ -488,7 +504,7 @@ const visualComponents = {
         const that = this;
         that.updateLoadingStates(url, false);
         return new Promise((resolve, reject) => {
-            textureLoader.load(
+            that.textureLoader.load(
                 url,
                 function (texture) {
                     that.updateLoadingStates(url, true);
@@ -882,6 +898,7 @@ const visualComponents = {
 
     // TODO: will need implementation
     loadMaterials(_data, displace, progressCallback, stateCallback) {
+        const that = this;
         return new Promise((resolve, reject) => {
             var materialsToLoad = [], loadCounter = 0, progressCounter = 0;
 
@@ -928,7 +945,7 @@ const visualComponents = {
             }
 
             function loadNewMaterial(obj) {
-                textureLoader.load(obj.cover,
+                that.textureLoader.load(obj.cover,
                     function (_texture) {
                         console.log("New material loaded", _texture);
                         // texture.wrapT = THREE.RepeatWrapping;
@@ -1703,6 +1720,7 @@ const visualComponents = {
 
         if (visualComponents.components.water) {
             let waterUniforms = visualComponents.components.water.material.uniforms;
+            waterUniforms['size'].value = visualComponents.envParams.components.water.size;
             waterUniforms['sunDirection'].value.copy(visualComponents.components.sun).normalize();
             waterUniforms['waterColor'].value = new THREE.Color(visualComponents.envParams.components.water.waterColor).convertSRGBToLinear();
             waterUniforms['sunColor'].value = new THREE.Color(visualComponents.envParams.components.sun.color).convertSRGBToLinear();

@@ -9,6 +9,8 @@ import createCache from '@emotion/cache';
 import App from './app/app';
 import theme from './theme';
 
+import appConfig from './config/appConfig.json';
+
 const cache = createCache({ key: 'css' });
 
 function Client() {
@@ -25,7 +27,7 @@ function Client() {
         <ThemeProvider theme={theme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
-          <App />
+          <App appConfig={appConfig} />
         </ThemeProvider>
       </CacheProvider>
     </BrowserRouter>

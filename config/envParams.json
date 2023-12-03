@@ -135,6 +135,8 @@
     },
     "water": {
       "visible": true,
+      "size": 1,
+      "scale": 1014,
       "waterColor": "#7d7d7d",
       "waterDistortionScale": 10,
       "waterSpeed": 0.014,
@@ -143,7 +145,33 @@
       },
       "rotation": {
         "x": 2
-      }
+      },
+      "normalMap": [
+        "public/images/water/waternormals.jpg",
+        "public/images/water/water1.jpg",
+        "public/images/water/water2.jpg",
+        "public/images/water/water3.jpg",
+        "public/images/water/water4.jpg",
+        "public/images/water/water5.jpg",
+        "public/images/water/water6.jpg",
+        "public/images/water/water7.jpg",
+        "public/images/water/water8.jpg",
+        "public/images/water/water9.jpg",
+        "public/images/water/water10.jpg",
+        "public/images/water/water11.jpg",
+        "public/images/water/water12.jpg",
+        "public/images/water/water13.jpg",
+        "public/images/water/water14.jpg",
+        "public/images/water/water15.jpg",
+        "public/images/water/water16.jpg",
+        "public/images/water/water17.jpg",
+        "public/images/water/water18.jpg",
+        "public/images/water/water19.jpg",
+        "public/images/water/water20.jpg",
+        "public/images/water/water21.jpg",
+        "public/images/water/water22.jpg",
+        "public/images/water/water23.jpg"
+      ]
     },
     "sky": {
       "visible": true,

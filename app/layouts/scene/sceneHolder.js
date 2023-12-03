@@ -24,6 +24,7 @@ import Scene from './scene';
 import dataController from "../../store/dataController";
 import textController from "../../store/textController";
 import settingsController from "../../store/settingsController";
+import { Switch } from "@mui/material";
 
 class SceneHolder extends React.Component {
 
@@ -37,8 +38,8 @@ class SceneHolder extends React.Component {
             sliderValue: 0,
             onCameraRotation: false,
             loadingDialogObj: {
-                title: "Earth Signal Universe Wide",
-                subtitle: "Building Simulation...",
+                title: props.appConfig && props.appConfig.title,
+                subtitle: "Loading...",
                 percentText: 0
             },
             sceneSettings: {},
@@ -74,7 +75,7 @@ class SceneHolder extends React.Component {
         const that = this;
         dataController.makeRequest('get', '/data').then(
             data => {
-                console.log(data);
+                console.log("Site Data:", data);
                 for (let key in data.texts) {
                     textController.addSection(key, data.texts[key]);
                 }
@@ -341,124 +342,19 @@ class SceneHolder extends React.Component {
                         updateItems={false}
                         items={[
                             {
-                                text: 'Run Simulation',
-                                iconUrl: '/images/svgs/run-simulation.svg',
+                                text: 'Move Camera',
+                                // iconUrl: '/images/svgs/run-simulation.svg',
                                 style: { backgroundColor: '#5050507F', color: '#fff' },
-                                className: 'esuwBtn',
+                                className: 'primBtn',
                                 onClick: () => {
                                     this.setState({
                                         onTransmission: true
                                     })
-                                    this.scene.startTransmission();
-                                }
-                            },
-                            {
-                                text: 'Increase Speed',
-                                iconUrl: '/images/svgs/increase-speed.svg',
-                                style: { backgroundColor: '#5050507F', color: '#fff' },
-                                className: 'esuwBtn',
-                                onClick: () => {
-                                    this.scene.increaseDecreaseVel(true);
-                                }
-                            },
-                            {
-                                text: 'Decrease Speed',
-                                iconUrl: '/images/svgs/decrease-speed.svg',
-                                style: { backgroundColor: '#5050507F', color: '#fff' },
-                                className: 'esuwBtn',
-                                onClick: () => {
-                                    this.scene.increaseDecreaseVel(false);
-                                }
-                            },
-                            {
-                                text: 'Revert to Start',
-                                iconUrl: '/images/svgs/revert-to-start.svg',
-                                style: { backgroundColor: '#5050507F', color: '#fff' },
-                                className: 'esuwBtn',
-                                onClick: () => {
-                                    if (this.state.onTransmission) {
-                                        this.scene.startTransmission()
-                                    }
-                                }
-                            },
-                            {
-                                text: 'Planets',
-                                iconUrl: '/images/svgs/move-to-planet.svg',
-                                style: { backgroundColor: '#5050507F', color: '#fff' },
-                                className: 'esuwBtn',
-                                onClick: () => {
-                                    this.setState({
-                                        showPlanets: !this.state.showPlanets
-                                    })
+                                    this.scene.moveCamera({ x: 200, y: 200, z: 200 }, 2000);
                                 }
                             }
                         ]}
                     />
-
-                    {/* {this.state.sceneTime > 0 && <p>Scene Time: {new Date(this.state.sceneTime * 1000).toISOString().substring(14, 19)}</p>} */}
-
-                    <Slide
-                        direction="right"
-                        mountOnEnter unmountOnExit
-                        timeout={1000}
-                        // in={this.state.animationTime > 0}
-                        in={this.state.onTransmission}
-                        style={{
-                            marginTop: 10,
-                            paddingLeft: 3
-                        }}>
-                        <p id={"#transmissionTimeText"}>Transmission time: {new Date(this.state.animationTime * 1000).toISOString().substring(14, 19)}</p>
-                    </Slide>
-
-                    {/* <p>Slider value: {this.state.sliderValue > 0 ? new Date((this.state.onSliderDown ? this.state.sliderValue : this.state.animationTime) * 1000).toISOString().substring(14, 19) : `00:00`}</p> */}
-                    {/* <Slider
-                        className="slider-no-track"
-                        defaultValue={1}
-                        aria-label="timeSlider"
-                        value={this.state.onSliderDown ? this.state.sliderValue : this.state.animationTime}
-                        max={780}
-                        min={0}
-                        disabled={!this.state.onTransmission}
-                        onPointerDown={() => {
-                            this.setState({
-                                onSliderDown: true
-                            })
-                        }}
-                        onPointerUp={() => {
-                            this.setState({
-                                onSliderDown: false
-                            });
-                            this.scene.setTransmissionTime(this.state.sliderValue);
-                        }}
-                        onChange={(e) => {
-                            this.setState({
-                                sliderValue: e.target.value
-                            })
-                        }}
-                    /> */}
-
-                    <div style={{ marginTop: 15 }} className="transitionAll">
-                        {this.state.planetsCollisions && this.state.showPlanets && !this.state.hideUiList &&
-                            <ListMenu
-                                updateItems={false}
-                                items={getPlanetsArray()}
-                            />
-
-                            //     Object.keys(this.state.planetsCollisions).map((prop, i) => {
-                            //         return (
-                            // <p
-                            //     key={i}
-                            //     className={'planet_title pointer'}
-                            //     id={prop.toLowerCase()}
-                            //     onClick={() => {
-                            //         this.scene.setActiveItem(prop.toLowerCase())
-                            //     }}>
-                            //     {this.state.planetsCollisions[prop].name} {this.state.planetsCollisions[prop].collided ? 'collided' : ''}
-                            // </p>
-                            // )
-                            //     })
-                        }
-                    </div>
 
                     <div style={{ marginTop: 15 }}>
                         <p id='debugText' />
@@ -466,25 +362,6 @@ class SceneHolder extends React.Component {
                 </div>
             </div >
         )
-
-        function getPlanetsArray() {
-            let a = [], index = 0;
-            for (let key in that.state.planetsCollisions) {
-                a.push({
-                    id: that.state.planetsCollisions[key].name.toLowerCase() + '_title',
-                    text: that.state.planetsCollisions[key].name,
-                    iconUrl: `/images/svgs/planet-${that.state.planetsCollisions[key].name.toLowerCase()}.svg`,
-                    style: { backgroundColor: '#5050507F', color: '#fff' },
-                    className: 'esuwBtn',
-                    timeout: utils.randomInteger(1000, index * 500),
-                    onClick: () => {
-                        that.scene.setActiveItem(that.state.planetsCollisions[key].name.toLowerCase())
-                    }
-                })
-                index++;
-            }
-            return a;
-        }
     }
 
     getBottomMenuView = () => {
@@ -567,7 +444,7 @@ class SceneHolder extends React.Component {
             <div style={{ width: "100%", height: "100%" }}>
 
                 {this.state.sceneStared && this.state.showUI && this.getBottomMenuView()}
-                {/* {this.state.sceneStared && this.state.showUI && this.getUI()} */}
+                {this.state.sceneStared && this.state.showUI && this.getUI()}
 
                 <ResponsiveDialog
                     dialogObj={this.state.dialogObj}
@@ -579,11 +456,11 @@ class SceneHolder extends React.Component {
                     size={this.state.dialogObj && this.state.dialogObj.size ? this.state.dialogObj.size : 'md'}
                 />
 
-                {/* <LoadingDialog
+                <LoadingDialog
                     visible={!this.state.sceneStared || this.state.showLoadingDialog}
                     animateProgress={true}
                     dialogObj={this.state.loadingDialogObj}
-                /> */}
+                />
 
                 {this.state.envParams &&
                     <Scene

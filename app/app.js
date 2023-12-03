@@ -9,11 +9,12 @@ utils.browserCheck();
 
 function Copyright() {
   return (
-    <Typography variant="body2" align="center" color="primary">
+    <Typography variant="body2" align="center" color="primary" style={{ position: 'absolute', bottom: 0 }}>
       {'Copyright © '}
-      <Link color="primary" href="https://earthsignaluniversewide.com/">
-        {typeof document !== 'undefined' ? document.title : ""}
-      </Link>{' '}
+      {/* <Link color="primary"> */}
+      {typeof document !== 'undefined' ? document.title : ""}
+      {/* </Link> */}
+      {' '}
       {new Date().getFullYear()}
       {'.'}
     </Typography>
@@ -52,7 +53,12 @@ export default class App extends React.Component {
     return (
       <div style={{ height: '100%', width: '100%', backgroundColor: 'black' }}>
         {/* <NavHeader /> */}
-        <AppRouter appState={this.state} setAppState={this.setAppState} envParams={this.state.envParams} />
+        <AppRouter
+          appState={this.state}
+          setAppState={this.setAppState}
+          envParams={this.state.envParams}
+          appConfig={this.props.appConfig}
+        />
         <Copyright />
       </div>
     );

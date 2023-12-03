@@ -287,35 +287,21 @@ class ResponsiveDialog extends React.Component {
         if (visible) {
             visible = dialogObj.title != null || dialogObj.text != null || dialogObj.inputs != null || dialogObj.icons != null;
         }
-        // if (visible && dialogObj.inputs && !Array.isArray(dialogObj.inputs)) {
-        //     let a = [];
-        //     for (let key in dialogObj.inputs) {
-        //         a.push(dialogObj.inputs[key]);
-        //     }
-        //     dialogObj.inputs = a;
-        // }
-        if (visible) {
-            console.log(`$ ResponsiveDialog. Visible: ${visible} $`);
-        }
+        console.log(`$ ResponsiveDialog. Visible: ${visible} $`);
         return (
             <div>
-                {
-                    parse(`
-                        <style>
-                          .dialogContent * {
-                            color: white;
-                            text-shadow: none;
-                          }
-                        </style>
-                    `)
-                }
                 <Dialog
                     style={this.props.style}
                     maxWidth={this.props.size || 'xl'}
                     open={visible}
                     transitionDuration={{ enter: 500, exit: 500 }}
                     onClose={this.onClose}
-                    // disableAutoFocus={true}
+                    PaperProps={{
+                        style: {
+                            backgroundColor: 'transparent',
+                            boxShadow: 'none',
+                        },
+                    }}
                     aria-labelledby="responsive-dialog-title">
                     <DialogContent style={{ background: 'black', borderWidth: 1, borderStyle: 'solid', borderColor: 'black', borderRadius: 10, padding: 20 }}>
 

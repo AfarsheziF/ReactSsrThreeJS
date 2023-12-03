@@ -271,11 +271,11 @@ a:hover {
 .slider-no-track .MuiSlider-track {
   visibility: hidden; }
 
-.esuwBtn {
+.primBtn {
   color: #ffffff !important;
   background-color: "#5050507F"; }
 
-.esuwBtn:hover {
+.primBtn:hover {
   background-color: #556cd6 !important; }
 
 #root {
