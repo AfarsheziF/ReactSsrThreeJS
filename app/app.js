@@ -74,7 +74,7 @@ export default class App extends React.Component {
     return (
       <div style={{ height: '100%', width: '100%', backgroundColor: 'black' }}>
 
-        <IntroDialog
+        {/* <IntroDialog
           visible={!this.state.holderState?.sceneStared || !this.state.holderState?.components?.Audio?.loaded}
           loadingManager={this.loadingManager}
           opacity={0.5}
@@ -89,7 +89,15 @@ export default class App extends React.Component {
             appConfig={this.props.appConfig}
             loadingManager={this.loadingManager}
           />
-        }
+        } */}
+
+        <AppRouter
+          appState={this.state}
+          setAppState={this.setAppState}
+          envParams={this.state.envParams}
+          appConfig={this.props.appConfig}
+          loadingManager={this.loadingManager}
+        />
 
         {this.state.gpu &&
           this.state.gpu.error &&

@@ -1,8 +1,9 @@
 import React from "react";
 import * as THREE from "vendor_mods/three/build/three.module";
+import Stats from 'vendor_mods/three/examples/jsm/libs/stats.module'
 
 import { OrbitControls } from "vendor_mods/three/examples/jsm/controls/OrbitControls";
-import { TeapotGeometry } from 'three/addons/geometries/TeapotGeometry.js';
+import { TeapotGeometry } from 'vendor_mods/three/examples/jsm/geometries/TeapotGeometry';
 
 let clock, onEnvironmentUpdate, objects;
 
@@ -81,7 +82,7 @@ export default class SceneTest extends React.Component {
 
             // CAMERA
             objects.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 80000);
-            objects.camera.position.set(- 600, 550, 1300);
+            objects.camera.position.set(0, 0, 1300);
 
             // CONTROLS
             objects.cameraControls = new OrbitControls(objects.camera, objects.renderer.domElement);
@@ -100,10 +101,23 @@ export default class SceneTest extends React.Component {
             objects.scene.add(objects.ambientLight);
             objects.scene.add(objects.light);
 
-            const geometry = new TeapotGeometry(300, -1);
-            const teapot = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ wireframe: true }));
-            objects.scene.add(teapot);
+            // const geometry = new TeapotGeometry(300, -1);
+            // const teapot = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ wireframe: true, color: '#ff0000' }));
+            // objects.scene.add(teapot);
 
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            const cube = new THREE.Mesh(geometry, material);
+            objects.scene.add(cube);
+
+            clock = new THREE.Clock();
+
+            objects.stats = Stats();
+            objects.stats.domElement.style.cssText = 'position:absolute;bottom:0px;left:0px;';
+            // objects.stats.domElement.style.display = this.onDebug || this.envParams.device.showStats ? 'block' : 'none';
+            document.body.appendChild(objects.stats.dom)
+
+            loadScene();
         } else {
             loadScene();
         }
@@ -179,21 +193,25 @@ export default class SceneTest extends React.Component {
         this.deltaTime = Math.min(0.05, clock.getDelta());
         this.time = clock.getElapsedTime();
 
-        if (this.onDebug && this.envParams.device.showDebugView) {
-            this.debugViewTime.innerHTML = `Time: ${Math.round((this.time + Number.EPSILON) * 100) / 100}`;
-            this.debugViewDeltaTime.innerHTML = `DeltaTime: ${Math.round((this.deltaTime + Number.EPSILON) * 10000) / 10000}`;
-        }
+        objects.stats.update();
 
-        if (!onEnvironmentUpdate) {
-            this.updateObjects(this.time, this.deltaTime);
+        objects.cameraControls.update(this.deltaTime);
 
-            // if (this.sceneStared && VisualComponents.components) {
-            //     VisualAnimations.update({ time: this.time, deltaTime: this.deltaTime });
-            // }
+        // if (this.onDebug && this.envParams.device.showDebugView) {
+        //     this.debugViewTime.innerHTML = `Time: ${Math.round((this.time + Number.EPSILON) * 100) / 100}`;
+        //     this.debugViewDeltaTime.innerHTML = `DeltaTime: ${Math.round((this.deltaTime + Number.EPSILON) * 10000) / 10000}`;
+        // }
 
-            this.frameId = window.requestAnimationFrame(this.update);
-            this.renderScene({ time: this.time, deltaTime: this.deltaTime });
-        }
+        // if (!onEnvironmentUpdate) {
+        // this.updateObjects(this.time, this.deltaTime);
+
+        // if (this.sceneStared && VisualComponents.components) {
+        //     VisualAnimations.update({ time: this.time, deltaTime: this.deltaTime });
+        // }
+
+        this.frameId = window.requestAnimationFrame(this.update);
+        this.renderScene({ time: this.time, deltaTime: this.deltaTime });
+        // }
     }
 
     // updateObjects = (time, deltaTime) => {
@@ -208,7 +226,7 @@ export default class SceneTest extends React.Component {
     render() {
         return (
             <div style={{ width: "100%", height: "100%" }} >
-                <div
+                {/* <div
                     id="scene_debug"
                     style={{
                         display: this.envParams.device.showDebugView ? 'flex' : 'none',
@@ -221,7 +239,7 @@ export default class SceneTest extends React.Component {
                     <p style={{ flex: 1 }}>Tier: {this.envParams.device.settingsState}</p>
                     <p style={{ flex: 1 }} id="scene_debug_time"></p>
                     <p style={{ flex: 1 }} id="scene_debug_deltaTime"></p>
-                </div>
+                </div> */}
                 <div style={{ width: "100%", height: "100%" }} ref={mount => { this.mount = mount }} />
             </div>
         )
