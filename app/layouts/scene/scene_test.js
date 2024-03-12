@@ -76,17 +76,21 @@ export default class SceneTest extends React.Component {
             objects = {};
 
             // RENDERER
-            objects.renderer = new THREE.WebGLRenderer({ antialias: true });
-            objects.renderer.setPixelRatio(window.devicePixelRatio);
+            objects.renderer = new THREE.WebGLRenderer({
+                antialias: true,
+                powerPreference: 'high-performance',
+                alpha: true
+            });
+            objects.renderer.setPixelRatio(window.devicePixelRatio || 1);
             objects.renderer.setSize(this.width, this.height);
+            this.mount.appendChild(objects.renderer.domElement);
 
             // CAMERA
-            objects.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 80000);
-            objects.camera.position.set(0, 0, 1300);
+            objects.camera = new THREE.PerspectiveCamera(50, this.width / this.height, 5, 10000);
+            objects.camera.position.set(0, 0, 1500);
 
             // CONTROLS
             objects.cameraControls = new OrbitControls(objects.camera, objects.renderer.domElement);
-            objects.cameraControls.addEventListener('change', objects.render);
 
             // LIGHTS
             objects.ambientLight = new THREE.AmbientLight(0x7c7c7c, 3.0);
@@ -94,27 +98,20 @@ export default class SceneTest extends React.Component {
             objects.light = new THREE.DirectionalLight(0xFFFFFF, 3.0);
             objects.light.position.set(0.32, 0.39, 0.7);
 
-            // scene itself
+            // SCENE
             objects.scene = new THREE.Scene();
-            objects.scene.background = new THREE.Color(0xAAAAAA);
 
             objects.scene.add(objects.ambientLight);
             objects.scene.add(objects.light);
 
-            // const geometry = new TeapotGeometry(300, -1);
-            // const teapot = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ wireframe: true, color: '#ff0000' }));
-            // objects.scene.add(teapot);
-
-            const geometry = new THREE.BoxGeometry(1, 1, 1);
-            const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-            const cube = new THREE.Mesh(geometry, material);
-            objects.scene.add(cube);
+            let geometry = new TeapotGeometry(300, -1);
+            const teapot = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ side: THREE.DoubleSide }));
+            objects.scene.add(teapot);
 
             clock = new THREE.Clock();
 
             objects.stats = Stats();
             objects.stats.domElement.style.cssText = 'position:absolute;bottom:0px;left:0px;';
-            // objects.stats.domElement.style.display = this.onDebug || this.envParams.device.showStats ? 'block' : 'none';
             document.body.appendChild(objects.stats.dom)
 
             loadScene();
@@ -156,36 +153,15 @@ export default class SceneTest extends React.Component {
 
     // listeners
 
-    onComponentsLoaded = (component) => {
-        // For inner components promises such as assets load
-        this.props.updateHolderState({
-            components: {
-                [[component.name]]: component
-            }
-        })
-    }
-
     onWindowResize = () => {
         this.width = this.mount.clientWidth;
         this.height = this.mount.clientHeight;
-        // VisualComponents.onWindowResize(this.width, this.height);
+
+        objects.renderer.setSize(this.width, this.height);
+
+        objects.camera.aspect = this.width / this.height;
+        objects.camera.updateProjectionMatrix();
     }
-
-    // Setters
-
-    setCameraRotation = (state) => {
-        console.log(`> Scene. enableCameraRotation: ${state} <`);
-        this.envParams.camera.enableCameraRotation = state;
-        // VisualComponents.controls.autoRotate = this.envParams.camera.enableCameraRotation;
-    }
-
-    setInteractionState(interactionState, _clickableState, origin) {
-        console.log("setInteractionState:", interactionState, _clickableState, origin);
-        this.blockInteraction = !interactionState;
-        this.clickableState = _clickableState;
-        // if (VisualComponents.controls) VisualComponents.controls.enabled = interactionState;
-    }
-
 
     //
 
@@ -194,52 +170,16 @@ export default class SceneTest extends React.Component {
         this.time = clock.getElapsedTime();
 
         objects.stats.update();
-
         objects.cameraControls.update(this.deltaTime);
 
-        // if (this.onDebug && this.envParams.device.showDebugView) {
-        //     this.debugViewTime.innerHTML = `Time: ${Math.round((this.time + Number.EPSILON) * 100) / 100}`;
-        //     this.debugViewDeltaTime.innerHTML = `DeltaTime: ${Math.round((this.deltaTime + Number.EPSILON) * 10000) / 10000}`;
-        // }
-
-        // if (!onEnvironmentUpdate) {
-        // this.updateObjects(this.time, this.deltaTime);
-
-        // if (this.sceneStared && VisualComponents.components) {
-        //     VisualAnimations.update({ time: this.time, deltaTime: this.deltaTime });
-        // }
-
         this.frameId = window.requestAnimationFrame(this.update);
-        this.renderScene({ time: this.time, deltaTime: this.deltaTime });
-        // }
-    }
-
-    // updateObjects = (time, deltaTime) => {
-    //     VisualComponents.updateComponents(time, deltaTime);
-    // }
-
-    renderScene = (timeProps) => {
-        // VisualComponents.renderScene(timeProps);
         objects.renderer.render(objects.scene, objects.camera);
-    };
+    }
 
     render() {
         return (
             <div style={{ width: "100%", height: "100%" }} >
-                {/* <div
-                    id="scene_debug"
-                    style={{
-                        display: this.envParams.device.showDebugView ? 'flex' : 'none',
-                        position: 'absolute',
-                        top: 0,
-                        flexDirection: 'column',
-                        padding: 15
-                    }}
-                >
-                    <p style={{ flex: 1 }}>Tier: {this.envParams.device.settingsState}</p>
-                    <p style={{ flex: 1 }} id="scene_debug_time"></p>
-                    <p style={{ flex: 1 }} id="scene_debug_deltaTime"></p>
-                </div> */}
+                <p>Start state: {this.sceneStared ? '1' : '0'}</p>
                 <div style={{ width: "100%", height: "100%" }} ref={mount => { this.mount = mount }} />
             </div>
         )
