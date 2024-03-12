@@ -6,7 +6,7 @@ import { TeapotGeometry } from 'three/addons/geometries/TeapotGeometry.js';
 
 let clock, onEnvironmentUpdate, objects;
 
-export default class Scene extends React.Component {
+export default class SceneTest extends React.Component {
 
     constructor(props) {
         super(props);

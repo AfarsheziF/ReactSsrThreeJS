@@ -24,6 +24,7 @@ import dataController from "../../store/dataController";
 import textController from "../../store/textController";
 import settingsController from "../../store/settingsController";
 import ImageContainer from "../../components/Image/ImageContainer";
+import SceneTest from "./scene_test";
 
 
 class SceneHolder extends React.Component {
@@ -665,7 +666,7 @@ class SceneHolder extends React.Component {
                 {/* {this.getUI()} */}
                 {/* {this.getEmbed()} */}
 
-                {this.state.sceneStared && this.state.showUI && this.getUI()}
+                {/* {this.state.sceneStared && this.state.showUI && this.getUI()}
                 {this.state.showEmbed && this.getEmbed()}
                 {this.state.sceneStared && this.state.showStartMenu && this.state.components?.Audio?.loaded && this.getStartMenu()}
                 {this.state.sceneStared && this.state.components.Audio?.loaded && this.state.showMenu && this.getBottomMenuView()}
@@ -700,7 +701,20 @@ class SceneHolder extends React.Component {
                         onDebug={this.props.onDebug}
                         loadingManager={this.props.loadingManager}
                     />
-                }
+                } */}
+
+                <SceneTest
+                    ref={ref => (this.scene = ref)}
+                    data={this.state.data}
+                    updateHolderState={this.updateState}
+                    setActiveItem={this.setActiveItem}
+                    onHoverItem={this.onHoverItem}
+                    onFileDownloaded={this.onFileDownloaded}
+                    envParams={this.state.envParams}
+                    onZoomCallback={this.onZoomCallback}
+                    onDebug={this.props.onDebug}
+                    loadingManager={this.props.loadingManager}
+                ></SceneTest>
 
             </div >
         )
