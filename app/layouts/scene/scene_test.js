@@ -5,7 +5,7 @@ import Stats from 'vendor_mods/three/examples/jsm/libs/stats.module'
 import { OrbitControls } from "vendor_mods/three/examples/jsm/controls/OrbitControls";
 import { TeapotGeometry } from 'vendor_mods/three/examples/jsm/geometries/TeapotGeometry';
 
-let clock, onEnvironmentUpdate, objects;
+let clock, onEnvironmentUpdate, objects, gui, envParams;
 
 export default class SceneTest extends React.Component {
 
@@ -107,12 +107,27 @@ export default class SceneTest extends React.Component {
             let geometry = new TeapotGeometry(300, -1);
             const teapot = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ side: THREE.DoubleSide }));
             objects.scene.add(teapot);
+            objects.teapot = teapot;
 
             clock = new THREE.Clock();
 
             objects.stats = Stats();
             objects.stats.domElement.style.cssText = 'position:absolute;bottom:0px;left:0px;';
             document.body.appendChild(objects.stats.dom)
+
+            envParams = {
+                teapot: {
+                    wireframe: false
+                }
+            };
+
+            gui = new lil.GUI().close();
+            let teapotFolder = gui.addFolder('Teapot')
+            teapotFolder.add(envParams.teapot, 'wireframe');
+
+            teapotFolder.onChange((controller) => {
+                objects.teapot.material.wireframe = envParams.teapot.wireframe;
+            });
 
             loadScene();
         } else {
