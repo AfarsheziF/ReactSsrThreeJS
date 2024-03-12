@@ -24,7 +24,7 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InputBase from '@mui/material/InputBase';
 
-import utils from '../../utils/utils';
+import appUtils from '../../utils/appUtils';
 
 const BootstrapInput = styled(InputBase)(({ theme, input }) => ({
     'label + &': {
@@ -72,8 +72,7 @@ class MaterialInput extends Component {
     }
 
     onChange = (event, newValue) => {
-        // console.log(event.target);
-        var input = this.state.input;
+        let input = this.state.input;
         input.value = newValue;
         this.setState({
             input: input
@@ -87,8 +86,15 @@ class MaterialInput extends Component {
         if (this.state.input.type) {
             return (
                 <div>
-                    {this.state.input.type === 'switch' && <Switch checked={this.state.input.value} onChange={this.onChange} disabled={this.state.input.disabled}></Switch>}
-                    {this.state.input.type === 'button' && <Button>{this.state.input.bthText}</Button>}
+                    {this.state.input.type === 'button' &&
+                        <Button>{this.state.input.bthText}</Button>}
+                    {this.state.input.type === 'switch' &&
+                        <Switch
+                            color="warning"
+                            checked={this.state.input.value}
+                            onChange={this.onChange}
+                            disabled={this.state.input.disabled}>
+                        </Switch>}
                     {this.state.input.type === 'slider' &&
                         <Slider
                             disabled={this.state.input.disabled}
@@ -96,14 +102,14 @@ class MaterialInput extends Component {
                             value={this.state.input.value}
                             onChange={this.onChange}
                             valueLabelFormat={(value, index) => {
-                                var value = value * 100 / this.state.input.values.max;
+                                value = value * 100 / this.state.input.max;
                                 return Math.round(value);
                             }}
                             aria-labelledby="discrete-slider"
                             valueLabelDisplay="auto"
                             marks
-                            min={this.state.input.values.min}
-                            max={this.state.input.values.max} />
+                            min={this.state.input.min}
+                            max={this.state.input.max} />
                     }
                     {
                         (this.state.input.type.toLowerCase() === 'dropdown' || this.state.input.type.toLowerCase() === 'select') &&
@@ -117,7 +123,15 @@ class MaterialInput extends Component {
                                 onChange={event => this.onChange(event, event.target.value)}
                                 input={<BootstrapInput input={this.state.input} />}>
                                 {this.state.input.values.map((prop, i) => {
-                                    return <option value={prop.value} key={i} style={{ backgroundColor: '#000' }}>{prop.title}</option>
+                                    return (
+                                        <option
+                                            value={prop.value}
+                                            key={i}
+                                            style={{ backgroundColor: '#000' }}
+                                            disabled={prop.disabled}>
+                                            {prop.title}
+                                        </option>
+                                    )
                                 })}
                             </NativeSelect>
                         </FormControl>
@@ -135,7 +149,7 @@ class ResponsiveDialog extends React.Component {
     constructor(props) {
         super(props);
         if (props.dialogObj && !props.dialogObj.id) {
-            props.dialogObj.id = utils.createId();
+            props.dialogObj.id = appUtils.createId();
         }
         this.state = {
             dialogObj: props.dialogObj,
@@ -189,7 +203,7 @@ class ResponsiveDialog extends React.Component {
         if (!state.update && !state.updateDialog && !state.onClosingDialog) {
             if (props.dialogObj && !state.dialogObj) {
                 if (!props.dialogObj.id) {
-                    props.dialogObj.id = utils.createId();
+                    props.dialogObj.id = appUtils.createId();
                 }
                 return {
                     dialogObj: props.dialogObj,
@@ -213,7 +227,7 @@ class ResponsiveDialog extends React.Component {
                 }
                 else {
                     if (!props.dialogObj.id) {
-                        props.dialogObj.id = utils.createId();
+                        props.dialogObj.id = appUtils.createId();
                     }
                     return {
                         newDialogObj: props.dialogObj,
@@ -271,7 +285,7 @@ class ResponsiveDialog extends React.Component {
         }
 
         return (
-            <IconButton onClick={() => { if (icon.url) utils.openInNewTab(icon.url) }}>
+            <IconButton onClick={() => { if (icon.url) appUtils.openInNewTab(icon.url) }}>
                 {iconView}
             </IconButton>
         );
@@ -281,7 +295,7 @@ class ResponsiveDialog extends React.Component {
         let visible = this.state.visible;
         let dialogObj = this.state.dialogObj || {};
         let subtitle = dialogObj.subtitle;
-        if (utils.isMobile) {
+        if (appUtils.isMobile) {
             subtitle = dialogObj.subtitle_mobile ? dialogObj.subtitle_mobile : subtitle;
         }
         if (visible) {
@@ -303,12 +317,26 @@ class ResponsiveDialog extends React.Component {
                         },
                     }}
                     aria-labelledby="responsive-dialog-title">
-                    <DialogContent style={{ background: 'black', borderWidth: 1, borderStyle: 'solid', borderColor: 'black', borderRadius: 10, padding: 20 }}>
-
+                    <DialogContent style={{
+                        background: 'black',
+                        border: 'solid 1px black',
+                        borderRadius: 10,
+                        padding: 20,
+                        overflow: 'hidden'
+                    }}>
                         <Grid container alignItems='center'>
                             {dialogObj.title &&
                                 <Grid item xs={12} style={{ marginBottom: 10 }}>
-                                    <h1 className={`white noShadow ${dialogObj.titleClass}`}>{dialogObj.title}</h1>
+                                    <Grid container direction={'row'}>
+                                        <Grid item xs={10} >
+                                            <h1 className={`white noShadow ${dialogObj.titleClass}`}>{dialogObj.title}</h1>
+                                        </Grid>
+                                        <Grid item xs={2} style={{ textAlign: 'end' }}>
+                                            <IconButton onClick={() => this.props.closeDialog()}>
+                                                <CancelIcon />
+                                            </IconButton>
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             }
 
@@ -321,7 +349,7 @@ class ResponsiveDialog extends React.Component {
                             {dialogObj.inputs && dialogObj.inputs.length > 0 &&
                                 <Grid item xs={12} style={{ marginBottom: 10 }}>
                                     {dialogObj.inputs.map((prop, key) => {
-                                        return (
+                                        return !prop.hide && (
                                             <Grid container
                                                 // justifyContent="center"
                                                 alignItems="center"
@@ -332,7 +360,7 @@ class ResponsiveDialog extends React.Component {
                                                     {prop.subText && <p style={{ marginTop: 2, fontStyle: 'italic' }} className={"noShadow " + Typography.subtitle2}>{prop.subText}</p>}
                                                 </Grid>
                                                 <Grid item xs={6}
-                                                    style={{ textAlign: 'center' }}>
+                                                    style={{ textAlign: 'end' }}>
                                                     <MaterialInput input={prop} onChange={this.onChange} />
                                                 </Grid>
                                             </Grid>

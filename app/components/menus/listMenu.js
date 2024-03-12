@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Slide, Button, Icon } from '@mui/material';
 
-import utils from '../../utils/utils';
+import appUtils from '../../utils/appUtils';
 
 // import Svg from '../../../images/svgs/run-simulation.svg'
 import SvgIcon from '../icons/svgIcon';
@@ -124,7 +124,7 @@ const formatItems = items => {
     let a = [];
     items.forEach(item => {
         a.push({
-            id: utils.createId(item.text || item),
+            id: appUtils.createId(item.text || item),
             ...item
         })
     });

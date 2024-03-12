@@ -1,61 +1,77 @@
 {
-  "title": "Settings",
-  "subtitle_mobile": "Settings are disabled in mobile.",
+  "title": "SETTINGS",
+  "subtitle_mobile": "",
   "inputs": [
     {
-      "name": "texturesMode",
+      "text": "Performance Mode",
+      "key": "settings_mode",
       "type": "dropdown",
-      "text": "Textures Mode",
-      "value": "highRes",
-      "value_mobile": "resized",
-      "disabled_mobile": true,
+      "value": null,
+      "disabled_mobile": false,
+      "closeDialogOnChange": true,
+      "reloadDialog": true,
       "values": [
         {
+          "title": "Ultra",
+          "value": "ultra",
+          "tier": "ultra",
+          "disabled_mobile": true
+        },
+        {
           "title": "High",
-          "value": "highRes"
+          "value": "high",
+          "tier": "high",
+          "disabled_mobile": true
         },
         {
           "title": "Medium",
-          "value": "medRes"
+          "value": "medium",
+          "tier": "medium"
         },
         {
           "title": "Low",
-          "value": "lowRes",
-          "value_mobile": "resized"
+          "value": "low",
+          "tier": "low"
         }
+      ]
+    },
+    {
+      "text": "Field Of View",
+      "key": [
+        "camera",
+        "fov"
       ],
-      "closeDialogOnChange": true
+      "type": "slider",
+      "min": 0,
+      "max": 120
     },
     {
-      "name": "environment",
-      "type": "switch",
-      "value": true,
-      "text": "Environment"
+      "text": "Antialiasing [SSAA]",
+      "key": [
+        "postFX",
+        "passes",
+        "SSAA",
+        "enabled"
+      ],
+      "reloadValue": true,
+      "type": "switch"
     },
     {
-      "name": "shadows",
-      "type": "switch",
-      "value": true,
-      "text": "Shadows"
+      "text": "Antialiasing [FXAA]",
+      "key": [
+        "postFX",
+        "passes",
+        "FXAA",
+        "enabled"
+      ],
+      "reloadValue": true,
+      "type": "switch"
     },
     {
-      "name": "reflections",
+      "text": "Show FPS",
+      "key": "show_stats",
       "type": "switch",
-      "value": true,
-      "text": "Reflections"
-    },
-    {
-      "name": "antialiasing",
-      "type": "switch",
-      "value": true,
-      "text": "Antialiasing",
-      "disabled": true
-    },
-    {
-      "name": "showUI",
-      "type": "switch",
-      "value": true,
-      "text": "Show Interface"
+      "value": false
     }
   ]
 }

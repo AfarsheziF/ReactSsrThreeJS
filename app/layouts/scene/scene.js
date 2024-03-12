@@ -1,18 +1,9 @@
 import React from "react";
-import * as THREE from "../../../vendor_mods/three/build/three.module";
+import * as THREE from "vendor_mods/three/build/three.module";
 
-import visualComponents from './Components/visualComponents';
-import utils from '../../utils/utils';
-
-let onDebug = false;
-
-// params
-let envParams,
-    onInitGraphics,
-    activeItem,
-    blockInteraction,
-    updateControls,
-    clickableState;
+import VisualComponents from './Components/VisualComponents';
+import VisualAnimations from "./Components/VisualAnimations";
+import appUtils from '../../utils/appUtils';
 
 let clock, onEnvironmentUpdate;
 
@@ -23,18 +14,22 @@ export default class Scene extends React.Component {
         this.state = {
             data: props.data ? props.data : [],
             initGraphics: true,
-            autoRotate: props.autoRotate,
-            settings: props.settings
+            autoRotate: props.autoRotate
         };
 
         this.time = 0;
-        onDebug = props.onDebug;
-        envParams = props.envParams;
+        this.onDebug = props.onDebug;
+        this.envParams = props.envParams;
     }
 
     componentDidMount() {
         console.log("-- Scene mounted --")
-        console.log('-- OnDebug: ' + onDebug);
+        console.log('-- OnDebug: ' + this.onDebug);
+
+        this.debugView = document.getElementById('scene_debug');
+        this.debugViewTime = document.getElementById('scene_debug_time');
+        this.debugViewDeltaTime = document.getElementById('scene_debug_deltaTime');
+
         this.mounted = true;
         this.initGraphics(this.state.initGraphics);
     }
@@ -45,7 +40,7 @@ export default class Scene extends React.Component {
     }
 
     componentDidUpdate() {
-        if (this.state.reInitGraphics && !onInitGraphics) {
+        if (this.state.reInitGraphics && !this.onInitGraphics) {
             this.initGraphics(this.state.reInitGraphics);
         }
 
@@ -62,44 +57,19 @@ export default class Scene extends React.Component {
 
     initGraphics = init => {
         console.log('Init graphics');
-        const that = this;
 
-        // onInitGraphics = true;
-        this.setState({
-            dataState: 'loading',
-            update: false
-        })
-
-        if (init) {
-            startInits().then(
-                function () {
-                    sceneSwitch();
-                }, function (e) {
-                    // handle error. Send back to holder
-                }
-            );
-        } else {
-            sceneSwitch();
-        }
-
-        function startInits() {
+        const startInits = () => {
             return new Promise((resolve, reject) => {
-                if (!visualComponents.scene) initScene(); // Watch for relaunch
+                if (!VisualComponents.scene) initScene(); // Watch for relaunch
                 initEnvironment();
                 initObjects().then(
-                    function (sceneObjects) {
-                        // initPostFX();
-                        // if (onDebug) {
-                        //     initGUI()
-                        //     // initDebugEnv(sceneObjects);
-                        // }
-                        // initUI();
-                        that.setState({
+                    () => {
+                        initPostFx();
+                        this.setState({
                             initGraphics: false
                         })
                         resolve();
                     }, function (e) {
-                        console.log(e);
                         reject(e);
                     }
                 );
@@ -107,75 +77,64 @@ export default class Scene extends React.Component {
 
         }
 
-        function initScene() {
+        const initScene = () => {
             console.log('Init Scene');
-            visualComponents.init(that.mount, envParams, onDebug, that.updateEnvironment, that.props.onFileDownloaded);
+            this.width = this.mount.clientWidth;
+            this.height = this.mount.clientHeight;
+
+            VisualComponents.init(this.mount, this.envParams, this.onDebug, this.props.loadingManager);
             clock = new THREE.Clock();
 
-            that.width = that.mount.clientWidth;
-            that.height = that.mount.clientHeight;
-
-            // envParams.antialias = window.devicePixelRatio > 1 ? false : true;
             let rendererOptions = {
-                antialias: utils.isLowEndMobile ? false : envParams.renderer.antialias,
+                antialias: this.envParams.renderer.antialias,
                 powerPreference: 'high-performance',
                 alpha: true
             };
-            // envParams.toneMapping = that.isLowEndMobile ? THREE.NoToneMapping : THREE.ACESFilmicToneMapping;
-            // envParams.toneMapping = THREE.ReinhardToneMapping;
-            visualComponents.createRenderer(rendererOptions, that.mount.clientWidth, that.mount.clientHeight);
-            that.mount.appendChild(visualComponents.renderer.domElement);
+            VisualComponents.createRenderer(rendererOptions);
+            this.mount.appendChild(VisualComponents.renderer.domElement);
 
-            visualComponents.createScene();
-            visualComponents.createCamera(that.width, that.height);
+            VisualComponents.createScene();
+            VisualComponents.createCamera(this.envParams.camera.type, this.envParams.camera_controls.type);
         }
 
-        function initEnvironment() {
+        const initEnvironment = () => {
             console.log('Init Environment');
-            // Lights
-            for (let key in envParams.lights.lights) {
-                if (window.osType.toLowerCase() === 'ios' && envParams.lights.lights[key].hideInIos) {
-                    // skip this light
-                } else {
-                    envParams.lights.lights[key].name = key;
-                    envParams.lights.lights[key].intensity = envParams.lights.lights[key].intensity || 1;
-                    visualComponents.scene.add(visualComponents.addLight(key, envParams.lights.lights[key]));
-                }
-            }
-            visualComponents.initDefaultMaterials(envParams.materials.onReflections);
+            VisualComponents.createLights();
+            VisualComponents.initDefaultMaterials(this.envParams.materials.onReflections);
         }
 
-        function initObjects() {
+        const initObjects = () => {
             console.log('Init Objects')
-            console.log('Textures Mode:', that.state.settings.texturesMode);
             // visualComponents.loadingStates.addDestination(29); // How many files are going to be loaded
-            visualComponents.components.objects = [];
             return new Promise((resolve, reject) => {
                 Promise.all([
-                    // visualComponents.loadTexture(`public/images/${that.state.settings.texturesMode}/STARS_COLOR_DARK.jpg`),
-                    envParams.components.water.visible && visualComponents.createObject('water', null, visualComponents.scene),
-                    envParams.components.sky.visible && visualComponents.createObject('sky', null, visualComponents.scene)
+                    VisualComponents.createObject('Audio', 'Audio', this.onComponentsLoaded),
+                    VisualComponents.createObject('sky', 'sky'),
+                    VisualComponents.createObject('WaterWaves', 'WaterWaves'),
+                    VisualComponents.createObject('SphereMesh', 'SphereMesh'),
+                    VisualComponents.createObject('Spline', 'Spline'),
+                    VisualComponents.createObject('Text', 'Text'),
                 ]).then(
-                    function (objects) {
-                        // console.log('Assets loaded:', objects);
-                        // objects[0].encoding = THREE.SRGBColorSpace;
-                        // objects[0].mapping = THREE.EquirectangularReflectionMapping;
-                        // visualComponents.scene.background = objects[0];
+                    (objects) => {
+                        VisualComponents.setSceneEnvironment("sky");
 
                         objects.forEach(obj => {
-                            visualComponents.scene.add(obj);
+                            obj.addToScene ? obj.addToScene(VisualComponents.scene) : VisualComponents.scene.add(obj);
+                            obj.updateMaterial && obj.updateMaterial(VisualComponents.scene.environment);
                         })
 
-                        const geometry = new THREE.BoxGeometry(100, 100, 100);
-                        const cube = new THREE.Mesh(geometry, visualComponents.defaultMaterial);
-                        visualComponents.components.objects.push(cube);
-                        visualComponents.scene.add(cube);
-
-                        // Will create a full physical object
-                        // const box = visualComponents.addNewShape('box', 100, 1, new THREE.Vector3(0, 0, 0));
+                        VisualComponents.camera.position.copy(VisualComponents.components.Spline.positions[0]);
+                        VisualAnimations.init({
+                            visualComponents: VisualComponents,
+                            envParams: this.envParams.animation,
+                            state: {
+                                setSceneState: this.setState,
+                                setHolderState: this.props.updateHolderState
+                            }
+                        });
 
                         console.log('Objects loaded');
-                        console.log(visualComponents.components);
+                        console.log(VisualComponents.components);
                         resolve();
                     }, function (e) {
                         reject(e);
@@ -184,19 +143,42 @@ export default class Scene extends React.Component {
             });
         }
 
+        const initPostFx = () => {
+            VisualComponents.createComposer(this.envParams.postFX, this.envParams.editor.enabled);
+        }
+
         // End
-        function sceneSwitch() {
-            console.log("Init active scene:", that.props.activeScene)
-            onInitGraphics = false;
-            that.setState({
+        const loadScene = () => {
+            console.log("Init active scene:", this.props.activeScene)
+            this.onInitGraphics = false;
+            this.setState({
                 reInitGraphics: false,
                 startScene: true
             });
         }
+
+        this.setState({
+            dataState: 'loading',
+            update: false
+        })
+
+        if (init) {
+            this.onInitGraphics = true;
+            startInits().then(
+                function () {
+                    loadScene();
+                }, function (e) {
+                    // handle error. Send back to holder
+                    console.log(e);
+                }
+            );
+        } else {
+            loadScene();
+        }
     }
 
     start = () => {
-        console.log('Scene start: ' + this.width + " / " + this.height);
+        console.log('Scene start: ' + this.width + " X " + this.height);
         if (!this.frameId || this.state.startScene) {
             this.frameId = requestAnimationFrame(this.update);
         }
@@ -209,22 +191,16 @@ export default class Scene extends React.Component {
             started: true,
             startScene: false
         })
-        // if (activeItem) {
-        //     this.setActiveItem(activeItem, true, true);
-        // }
-        // if (animations.initAnimation) {
-        //     this.performStartAnimation();
-        // }
         setTimeout(() => {
+            this.sceneStared = true;
             this.props.updateHolderState({
-                // planetsCollisions: planetsCollisions,
                 sceneStared: true,
                 showLoadingDialog: false
             })
-        }, 2000);
+        }, 5000);
 
-        blockInteraction = false;
-        updateControls = true;
+        this.blockInteraction = false;
+        this.updateControls = true;
 
     }
 
@@ -234,36 +210,46 @@ export default class Scene extends React.Component {
 
     // listeners
 
+    onComponentsLoaded = (component) => {
+        // For inner components promises such as assets load
+        this.props.updateHolderState({
+            components: {
+                [[component.name]]: component
+            }
+        })
+    }
+
     onWindowResize = () => {
         this.width = this.mount.clientWidth;
         this.height = this.mount.clientHeight;
-        visualComponents.onWindowResize(this.width, this.height);
+        VisualComponents.onWindowResize(this.width, this.height);
     }
 
     // Setters
 
     setCameraRotation = (state) => {
-        envParams.camera.enableCameraRotation = state;
-        visualComponents.controls.autoRotate = envParams.camera.enableCameraRotation;
+        console.log(`> Scene. enableCameraRotation: ${state} <`);
+        this.envParams.camera.enableCameraRotation = state;
+        VisualComponents.controls.autoRotate = this.envParams.camera.enableCameraRotation;
     }
 
     setInteractionState(interactionState, _clickableState, origin) {
         console.log("setInteractionState:", interactionState, _clickableState, origin);
-        blockInteraction = !interactionState;
-        clickableState = _clickableState;
-        if (visualComponents.controls) visualComponents.controls.enabled = interactionState;
+        this.blockInteraction = !interactionState;
+        this.clickableState = _clickableState;
+        if (VisualComponents.controls) VisualComponents.controls.enabled = interactionState;
     }
 
     moveCamera = (to, duration, _onComplete, lookAt) => {
-        if (!visualComponents.camera.position.equals(to)) {
-            blockInteraction = true;
-            new TWEEN.Tween(visualComponents.camera.position)
+        if (!VisualComponents.camera.position.equals(to)) {
+            this.blockInteraction = true;
+            new TWEEN.Tween(VisualComponents.camera.position)
                 .to(to, duration || 3000)
                 .easing(TWEEN.Easing.Sinusoidal.InOut)
                 .onUpdate(function (value) {
-                    visualComponents.camera.position.copy(value);
+                    VisualComponents.camera.position.copy(value);
                     if (lookAt) {
-                        visualComponents.camera.lookAt(lookAt);
+                        VisualComponents.camera.lookAt(lookAt);
                     }
                 })
                 .onComplete(function () {
@@ -275,33 +261,33 @@ export default class Scene extends React.Component {
         }
 
         function onComplete() {
-            blockInteraction = false;
-            visualComponents.camera.updateProjectionMatrix();
+            this.blockInteraction = false;
+            VisualComponents.camera.updateProjectionMatrix();
             if (_onComplete) _onComplete();
         }
     }
 
     rotateCamera = (position, duration, _onComplete) => {
         // backup original rotation
-        const startRotation = visualComponents.camera.quaternion.clone();
+        const startRotation = VisualComponents.camera.quaternion.clone();
 
         // final rotation (with lookAt)
-        visualComponents.camera.lookAt(position);
-        const endRotation = visualComponents.camera.quaternion.clone();
+        VisualComponents.camera.lookAt(position);
+        const endRotation = VisualComponents.camera.quaternion.clone();
 
         // revert to original rotation
-        visualComponents.camera.quaternion.copy(startRotation);
+        VisualComponents.camera.quaternion.copy(startRotation);
 
         // Tween
         new TWEEN.Tween
-            (visualComponents.camera.quaternion)
+            (VisualComponents.camera.quaternion)
             .easing(TWEEN.Easing.Sinusoidal.InOut)
             .to(endRotation, duration || 3000)
             .start()
             .onComplete(function () {
                 // visualComponents.camera.lookAt(position);
                 // visualComponents.camera.updateProjectionMatrix();
-                if (_onComplete) {
+                if (_onComplete != null) {
                     _onComplete();
                 }
             });
@@ -310,14 +296,14 @@ export default class Scene extends React.Component {
     zoomCamera = type => {
         const that = this;
         let zoomValue = 0.01; //envParams.zoomValue;
-        let cameraPos = visualComponents.camera.position.clone();
+        let cameraPos = VisualComponents.camera.position.clone();
         let allowZoomIn = true;
         let allowZoomOut = true;
-        if (visualComponents.controls.minDistance > 0) {
-            allowZoomIn = cameraPos.z < visualComponents.controls.minDistance - zoomValue;
+        if (VisualComponents.controls.minDistance > 0) {
+            allowZoomIn = cameraPos.z < VisualComponents.controls.minDistance - zoomValue;
         }
-        if (visualComponents.controls.maxDistance !== Infinity) {
-            allowZoomOut = cameraPos.z > visualComponents.controls.maxDistance + zoomValue;
+        if (VisualComponents.controls.maxDistance !== Infinity) {
+            allowZoomOut = cameraPos.z > VisualComponents.controls.maxDistance + zoomValue;
         }
 
         this.props.onZoomCallback(allowZoomIn, allowZoomOut);
@@ -337,11 +323,11 @@ export default class Scene extends React.Component {
             // });
             if (type === 'in') {
                 for (let i = 0; i < zoomValue; i++) {
-                    visualComponents.controls.dollyIn();
+                    VisualComponents.controls.dollyIn();
                 }
             } else {
                 for (let i = 0; i < zoomValue; i++) {
-                    visualComponents.controls.dollyOut();
+                    VisualComponents.controls.dollyOut();
                 }
             }
         }
@@ -350,66 +336,79 @@ export default class Scene extends React.Component {
         }
     }
 
-    updateSettings(key, value) {
-        switch (key) {
-            case "environment":
-                visualComponents.components.sky.visible = value;
-                break;
+    updateSettings(input) {
+        VisualComponents.updateSettings(input, true);
+    }
 
-            default:
-                console.log("updateSettings. Unhandled case: " + key);
-                break;
+    setAnimationGroupsState(groupsState) {
+        for (const key in groupsState) {
+            if (VisualAnimations.envParams.groups[key]) {
+                VisualAnimations.envParams.groups[key].active = groupsState[key];
+            }
+        }
+    }
+
+    setComponentValue(key, props) {
+        const component = VisualComponents[key] || VisualComponents.components[key];
+        if (component) {
+            if (component.setValue) {
+                component.setValue(props.value ? props : { value: props });
+            }
+        } else {
+            console.log("> Scene. setComponentValue: Component was not found: " + key);
         }
     }
 
     //
 
     update = () => {
-        // if (!document.hidden) {
-        const deltaTime = clock.getDelta();
-        const time = clock.getElapsedTime();
+        this.deltaTime = Math.min(0.05, clock.getDelta());
+        this.time = clock.getElapsedTime();
+
+        if (this.onDebug && this.envParams.device.showDebugView) {
+            this.debugViewTime.innerHTML = `Time: ${Math.round((this.time + Number.EPSILON) * 100) / 100}`;
+            this.debugViewDeltaTime.innerHTML = `DeltaTime: ${Math.round((this.deltaTime + Number.EPSILON) * 10000) / 10000}`;
+        }
 
         if (!onEnvironmentUpdate) {
-            if (visualComponents.controls) {
-                if (visualComponents.controls.update && updateControls) {
-                    visualComponents.controls.update(deltaTime);
-                }
+            this.updateObjects(this.time, this.deltaTime);
 
-                if (visualComponents.stats) {
-                    visualComponents.stats.update();
-                }
+            if (this.sceneStared && VisualComponents.components) {
+                VisualAnimations.update({ time: this.time, deltaTime: this.deltaTime });
             }
 
-            TWEEN.update();
-
-            this.updateObjects(time, deltaTime);
-
             this.frameId = window.requestAnimationFrame(this.update);
-            this.renderScene();
+            this.renderScene({ time: this.time, deltaTime: this.deltaTime });
         }
-        // }
     }
 
     updateObjects = (time, deltaTime) => {
-        if (visualComponents.components.water && visualComponents.components.water.visible) {
-            visualComponents.components.water.material.uniforms['time'].value += envParams.components.water.waterSpeed;
-        }
-
-        visualComponents.components.objects[0].position.y = Math.sin(time) * 20 + 5;
-        visualComponents.components.objects[0].rotation.x = time * 0.5;
-        visualComponents.components.objects[0].rotation.z = time * 0.51;
+        VisualComponents.updateComponents(time, deltaTime);
     }
 
-    renderScene = () => {
-        if (visualComponents.renderer) {
-            visualComponents.renderer.render(visualComponents.scene, visualComponents.camera);
-        }
-
+    renderScene = (timeProps) => {
+        VisualComponents.renderScene(timeProps);
     };
 
     render() {
         return (
-            <div style={{ width: "100%", height: "100%" }} ref={mount => { this.mount = mount }} />
+            <div style={{ width: "100%", height: "100%" }} >
+                <div
+                    id="scene_debug"
+                    style={{
+                        display: this.envParams.device.showDebugView ? 'flex' : 'none',
+                        position: 'absolute',
+                        top: 0,
+                        flexDirection: 'column',
+                        padding: 15
+                    }}
+                >
+                    <p style={{ flex: 1 }}>Tier: {this.envParams.device.settingsState}</p>
+                    <p style={{ flex: 1 }} id="scene_debug_time"></p>
+                    <p style={{ flex: 1 }} id="scene_debug_deltaTime"></p>
+                </div>
+                <div style={{ width: "100%", height: "100%" }} ref={mount => { this.mount = mount }} />
+            </div>
         )
     }
 }

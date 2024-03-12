@@ -122,13 +122,19 @@ const serverUtils = {
         });
     },
 
-    readDir(pathFromRoot) {
+    readDir(pathFromRoot, localPath) {
         return new Promise((resolve, reject) => {
             fs.readdir(global.rootDir + pathFromRoot, (err, files) => {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(files)
+                    if (localPath) {
+                        resolve(
+                            files.map(fileName => pathFromRoot + '/' + fileName)
+                        )
+                    } else {
+                        resolve(files)
+                    }
                 }
             });
         })

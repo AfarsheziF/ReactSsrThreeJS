@@ -1,0 +1,41 @@
+.image-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.image-item {
+    width: 50%;
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+.image-transition {
+    -webkit-transition: all ease;
+    -moz-transition: all ease;
+    -ms-transition: all ease;
+    -o-transition: all ease;
+    transition: all ease;
+    opacity: 0.8;
+
+    &.hide {
+        opacity: 0;
+    }
+
+    &.show {
+        opacity: 0.8;
+    }
+}
+
+/* .image-transition:hover {
+    opacity: 1;
+} */
+
+/* .blink {
+    animation: blinker 1s linear 1;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+} */

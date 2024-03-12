@@ -4,6 +4,7 @@ import { red } from '@mui/material/colors';
 // Create a theme instance.
 const theme = createTheme({
   palette: {
+    mode: 'dark',
     primary: {
       main: '#ffffff',
     },
@@ -17,6 +18,12 @@ const theme = createTheme({
       default: '#fff',
     },
   },
+  // transitions: {
+  //   duration: {
+  //     enteringScreen: 5000,
+  //     leavingScreen: 5000,
+  //   }
+  // }
   // components: {
   //   // Name of the component
   //   MenuItem: {

@@ -1,15 +1,15 @@
-import appState from '../appState.json';
-
-var styles = {};
-
-if (!appState.production) {
-    styles = {
-        colors: require('./colors.scss'),
-        fonts: require('./fonts.scss'),
-        styles: require('./style.scss'),
-        media: require('./media.scss'),
-        animations: require('./animations.scss')
+const styles = {
+    init() {
+        this.styles = {
+            colors: require('./colors.scss'),
+            fonts: require('./fonts.scss'),
+            styles: require('./style.scss'),
+            media: require('./media.scss'),
+            animations: require('./animations.scss'),
+            gui: window.__DEV__ && require('./guiStyle.scss')
+        }
     }
 }
+
 
 export default styles;

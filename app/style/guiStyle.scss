@@ -1,0 +1,17 @@
+.lil-gui {
+    --title-background-color: #b86200;
+    --hover-color: #b86200;
+    --string-color: #ff8800;
+    --number-color: #ff8800;
+    --background-color: #675e4c;
+    --folder-indent: 15px;
+    text-transform: capitalize;
+}
+
+.lil-gui .closed {
+    background-color: #0f0f0f;
+}
+
+.lil-gui button {
+    text-transform: capitalize;
+}

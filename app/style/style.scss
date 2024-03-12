@@ -14,6 +14,7 @@ iframe {
   width: 1px;
   min-width: 100%;
   min-height: 100%;
+  border: none;
 }
 
 h1,
@@ -33,20 +34,6 @@ a {
 }
 a:hover {
   color: $secondaryColor;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-a,
-b,
-span,
-hr {
-  // text-shadow: 1px 1px 5px grey;
 }
 
 // svg {
@@ -228,6 +215,18 @@ hr {
 .primBtn:hover {
   background-color: $secondaryColor !important;
   // transition: background-color 500ms ease !important;
+}
+
+// Img
+
+.imgStroke {
+  border: 1px solid white;
+  border-radius: 50%;
+  transition: border-color 500ms ease;
+}
+
+.imgStroke:hover {
+  border: 1px solid $secondaryColor;
 }
 
 // overwrites

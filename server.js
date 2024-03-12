@@ -20,47 +20,49 @@ import App from './app/app';
 import theme from './theme';
 
 import logger from './logs/logger';
-import serverUtils from './utils/serverUtils';
+// import serverUtils from './utils/serverUtils';
 import dataController from './store/dataController';
-
 import sessionController from './store/sessionController';
+import config from './config/config';
+import appConfig from './config/appConfig';
 
 const app = express();
-const port = process.env.PORT || 62099;
+const port = process.env.PORT || 62098;
 
 const rootDir = path.resolve('./');
 console.log("Root:", rootDir)
 global.hostState = process.env.NODE_ENV || 'production';
 global.__DEV__ = process.env.NODE_ENV === "development";
-global.basePrefix = process.env.NODE_ENV === "development" ? "" : "ESUW";
+global.basePrefix = process.env.NODE_ENV === "development" ? "" : appConfig.name;
 global.baseUrl = process.env.NODE_ENV === "development" ? rootDir : "https://orsarfat.uber.space/" + global.basePrefix;
 global.rootDir = process.env.NODE_ENV === "development" ? rootDir : "home/orsarfat/bin/" + global.basePrefix;
 process.env.sendErrorEmails = "true";
 
-app.use(cors({ origin: 'http://localhost:' + port }));
+app.use(cors({ origin: 'https://localhost:' + port }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // static
-app.use(`/build`, express.static(`build`));
 app.use('/public', express.static(global.baseUrl + '/public'));
-app.use('/fonts', express.static(global.baseUrl + '/fonts'));
-app.use('/images', express.static(global.baseUrl + '/images'));
 
 // requests
 app.use('/data', function (req, res, next) {
-  let data = require('./config/data').default;
-  res.status(200);
-  res.send(data.data);
+  config.loadAssets().then(
+    data => res.status(200).send(data),
+    e => {
+      res.status(503);
+      next();
+    }
+  )
 });
-app.use('/backups', function (req, res, next) {
-  let data = require('./config/data').default;
-  res.status(200);
-  res.send(data.backups);
-});
+
+// app.use('/backups', function (req, res, next) {
+//   let data = require('./config/siteParams').default;
+//   res.status(200);
+//   res.send(data.backups);
+// });
 app.post('/appConfig', function (req, res, next) {
   if (__DEV__ || req.body.session && sessionController.validateSession(req.body.session)) {
-    let appConfig = require('./config/appConfig.json');
     let appConfig_backup = require('./config/appConfig_backup.json');
     res.status(200);
     res.send(JSON.stringify({
@@ -73,9 +75,9 @@ app.post('/appConfig', function (req, res, next) {
     next(new Error('Invalid session token'));
   }
 });
+
 app.post('/validatePass', function (req, res, next) {
   if (req.body && req.body.value) {
-    let appConfig = require('./config/appConfig.json');
     if (req.body.value.toLowerCase() === appConfig.adminPassword.toLowerCase()) {
       res.status(200);
       res.send({ loggedIn: true, session: sessionController.generateSession() });
@@ -89,11 +91,23 @@ app.post('/validatePass', function (req, res, next) {
   }
 });
 
+app.use('/test', function (req, res, next) {
+  res.status(200).json({
+    status: 'Active',
+    name: appConfig.name,
+    host: global.baseUrl + ":" + port,
+    state: global.hostState,
+    baseURL: global.baseUrl,
+    basePrefix: global.basePrefix,
+    rootDir: global.rootDir,
+    sendErrorEmails: true
+  })
+});
+
+
 dataController.addFileRoute('/uploadFile', app);
 
 function handleRender(req, res) {
-  let appConfig = require('./config/appConfig.json');
-
   const cache = createCache({ key: 'css' });
   const { extractCriticalToChunks, constructStyleTagsFromChunks } = createEmotionServer(cache);
   const context = {};
@@ -122,16 +136,13 @@ function handleRender(req, res) {
     template(
       html,
       emotionCss,
-      appConfig.name,
-      null,
-      serverUtils.toTitleCase(appConfig.name.replaceAll("_", " ")),
-      null,
-      null,
+      appConfig,
       serialize({
         baseUrl: global.baseUrl,
         basePrefix: global.basePrefix
       },
-        { isJSON: true })
+        { isJSON: true }
+      )
     )
   );
 }
@@ -141,7 +152,6 @@ app.use(handleRender);
 
 console.log('> Starting serer <');
 app.listen(port, () => {
-  let appConfig = require('./config/appConfig.json');
   logger.init(
     appConfig.name,
     appConfig.emailsReceiverAddress || 'afrshezif@gmail.com',
@@ -152,8 +162,10 @@ app.listen(port, () => {
       logger.log(">--- Server Stared ---< ");
       logger.log(`Listening on ${port}`);
       logger.log(`BaseUrl: ${global.baseUrl}`);
+      logger.log(`State: ${global.hostState}`);
 
       dataController.clearStorageDirectory();
+      // config.init();
 
     },
     function (e) {

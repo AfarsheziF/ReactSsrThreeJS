@@ -1,0 +1,40 @@
+{
+    "camera_controls": {
+        "type": "ORBIT_CONTROLS",
+        "enabled": true,
+        "autoRotate": false,
+        "autoRotateSpeed": false,
+        "dampingFactor": 0.02,
+        "enableDamping": true,
+        "enablePan": true,
+        "enableRotate": true,
+        "enableZoom": true,
+        "keyPanSpeed": 7,
+        "minTargetRadius": 0,
+        "minDistance": 0,
+        "minPolarAngle": 0,
+        "minZoom": 0,
+        "panSpeed": 1,
+        "rotateSpeed": 1,
+        "screenSpacePanning": true,
+        "zoomSpeed": 1,
+        "zoomToCursor": false
+    },
+    "camera_controls": {
+        "type": "FPS_CONTROLS",
+        "enabled": false,
+        "activeLook": false,
+        "autoForward": false,
+        "constrainVertical": false,
+        "heightCoef": 1,
+        "heightMax": 1,
+        "heightMin": 0,
+        "heightSpeed": false,
+        "lookVertical": true,
+        "lookSpeed": 0.005,
+        "movementSpeed": 50,
+        "verticalMax": 1,
+        "verticalMin": 0,
+        "screenSpacePanning": false
+    }
+}

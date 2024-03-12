@@ -6,7 +6,7 @@ import computeShaderVelocity from "./computeShaderVelocity.js";
 import computeShaderPosition from "./computeShaderPosition.js";
 import particleVertexShader from './particleVertexShader';
 import particleFragmentShader from "./particleFragmentShader.js";
-import visualComponents from "../../visualComponents.js";
+import VisualComponents from "../../VisualComponents.js";
 
 const AMOUNT = 100;
 const WIDTH = Math.sqrt(AMOUNT);
@@ -99,7 +99,7 @@ const Protoplanet = {
                 //     velocityExponent: 0.2,
                 //     randVelocity: 0.001
                 // };
-                that.sPositions = visualComponents.getRandomSphericalPositionsWithBias(PARTICLES, 1, 0.5);
+                that.sPositions = VisualComponents.getRandomSphericalPositionsWithBias(PARTICLES, 1, 0.5);
 
                 gpuCompute = new GPUComputationRenderer(WIDTH, WIDTH, renderer);
 

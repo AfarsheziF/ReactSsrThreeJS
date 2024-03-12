@@ -1,6 +1,10 @@
 {
-  "title": "React SSR ThreeJS Template",
-  "name": "ReactSsrThreeJsTemp",
+  "title": "Darkness Is Completely Defined",
+  "name": "DarknessIsCompletelyDefined",
   "emailsReceiverAddress": "afrshezif@gmail.com",
-  "emailSubject": "ReactSsrThreeJsTemp"
+  "emailSubject": "DarknessIsCompletelyDefined",
+  "iconUrl": "public/images/icon/favicon.ico",
+  "description": "Audio-Visual album by the artist Or Sarfati. Released Jan 2024.",
+  "domain": "darknessiscompletelydefined.orsarfati.com",
+  "ogImage": "https://orsarfat.uber.space/parse-server/parse/files/uberspace/66f67fc3f8216d9299fffab15b4a396a_ogImage.png"
 }

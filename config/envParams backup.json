@@ -1,38 +1,110 @@
 {
-    "scene": {
-        "sceneBackgroundColor": "#000000"
+    "gui_controls": {
+        "hide_function": 0,
+        "download_function": 0
+    },
+    "device": {
+        "showDebugView": false
+    },
+    "editor": {
+        "enabled": false,
+        "overrideLights": false,
+        "grid": {
+            "visible": false,
+            "scale": 20000,
+            "segments": 1000,
+            "color": "#ffffff",
+            "opacity": 0.5,
+            "transparent": false,
+            "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            }
+        },
+        "functions": {
+            "source": {
+                "key": "visual_component",
+                "value": "camera, position"
+            },
+            "value": {
+                "key": "visual_component",
+                "value": "components, Spline, positions, 1"
+            },
+            "get_distance_function": 0,
+            "get_camera_position_function": 0
+        },
+        "editorCameraPos": {
+            "x": -1276,
+            "y": 1534,
+            "z": -2782
+        }
     },
     "renderer": {
         "antialias": true,
         "rendererExposure": 1,
         "rendererGamma": 1,
-        "rendererBackgroundColor": "#454545",
-        "toneMapping": 2
+        "rendererBackgroundColor": "#000000",
+        "toneMapping_values": [
+            "NoToneMapping",
+            "LinearToneMapping",
+            "ReinhardToneMapping",
+            "CineonToneMapping",
+            "ACESFilmicToneMapping"
+        ],
+        "toneMapping": 3
+    },
+    "scene": {
+        "sceneBackgroundColor": "#000000",
+        "fog": {
+            "active": true,
+            "type_values": [
+                "Fog",
+                "FogExp2"
+            ],
+            "type": "Fog",
+            "color": "#0d1721",
+            "near": 1,
+            "far": 10000
+        }
     },
     "camera": {
+        "type": "PERSPECTIVE_CAMERA",
         "near": 5,
         "fov": 50,
-        "far": 10000000,
-        "cameraStartPos": {
-            "x": 0,
-            "y": 0,
-            "z": -1200
-        },
-        "cameraStartPos_mobile": {
-            "x": 0,
-            "y": 0,
-            "z": -4500000
-        },
-        "zoomValue": 0.01,
-        "zoomSpeed": 0.5,
-        "enableDamping": true,
-        "dampingFactor": 0.02,
-        "enableCameraRotation": true,
-        "cameraRotationSpeed": 0.1,
+        "far": 10000,
+        "cameraHelper": false,
+        "cameraRotationSpeed": -0.25,
         "enableControlsRotation": true,
-        "minDistance": 0,
-        "maxDistance": null,
-        "blockInteraction": false
+        "blockInteraction": false,
+        "enableCameraRotation": false,
+        "position": {
+            "x": 0,
+            "y": 0,
+            "z": -1000
+        },
+        "lookAt": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
+    "camera_controls": {
+        "type": "FPS_CONTROLS",
+        "enabled": false,
+        "activeLook": false,
+        "autoForward": false,
+        "constrainVertical": false,
+        "heightCoef": 1,
+        "heightMax": 1,
+        "heightMin": 0,
+        "heightSpeed": false,
+        "lookVertical": true,
+        "lookSpeed": 0.005,
+        "movementSpeed": 50,
+        "verticalMax": 1,
+        "verticalMin": 0,
+        "screenSpacePanning": false
     },
     "materials": {
         "materialsColor": "#ffffff",
@@ -59,38 +131,62 @@
         "onReflections": true
     },
     "lights": {
-        "lights": {
-            "ambientLight": {
-                "color": "#ffffff",
-                "intensity": 0.1
-            },
-            "directionalLight": {
-                "color": "#ffa011",
-                "intensity": 0.1
-            }
-        },
+        "debug": false,
         "lightHelpers": [],
-        "debugLights": true,
         "lightsColor": "#ffffff",
         "lightsIntensity": 2,
         "spotLightAngle": 0.25,
         "lightsCenterDistance": 600,
         "lightDistance": 5000,
-        "lightsPower": 180,
-        "castShadow": false,
         "receiveShadow": false,
         "shadowMapResolution": 2048,
         "shadowNear": 0.5,
         "shadowFar": 500,
-        "shadowFocus": 1
-    },
-    "fog": {
-        "active": true,
-        "color": "#ffffff",
-        "near": 1,
-        "far": 5000
+        "shadowFocus": 1,
+        "lights": {
+            "ambientLight": {
+                "type": "ambientLight",
+                "visible": false,
+                "color": "#000000",
+                "intensity": 0.1
+            },
+            "directionalLight": {
+                "type": "directionalLight",
+                "visible": true,
+                "color": "#ffffff",
+                "intensity": 5.0,
+                "castShadow": true,
+                "position": {
+                    "x": 0,
+                    "y": 250,
+                    "z": 0
+                }
+            },
+            "spotlight": {
+                "type": "spotlight",
+                "visible": false,
+                "color": "#ffffff",
+                "castShadow": true,
+                "intensity": 10000000,
+                "distance": 550,
+                "angle": 5,
+                "penumbra": 0.2,
+                "decay": 1.5,
+                "position": {
+                    "x": 0,
+                    "y": 200,
+                    "z": 0
+                }
+            }
+        }
     },
     "components": {
+        "sun": {
+            "elevation": 90,
+            "azimuth": 0,
+            "exposure": 0.1,
+            "color": "#000"
+        },
         "blobPlanet": {
             "width": 1024,
             "width_mobile": 512,
@@ -134,59 +230,1433 @@
             "gradientColorStrength": 0.5
         },
         "water": {
-            "visible": true,
-            "size": 1,
-            "scale": 1014,
-            "waterColor": "#7d7d7d",
+            "visible": false,
+            "size": 0.5,
+            "scale": 1024,
+            "waterColor": "#000000",
             "waterDistortionScale": 10,
-            "waterSpeed": 0.014,
+            "waterSpeed": 0.007,
             "position": {
                 "y": -100
             },
             "rotation": {
                 "x": 2
             },
-            "normalMap": [
-                "public/images/water/waternormals.jpg",
-                "public/images/water/water1.jpg",
-                "public/images/water/water2.jpg",
-                "public/images/water/water3.jpg",
-                "public/images/water/water4.jpg",
-                "public/images/water/water5.jpg",
-                "public/images/water/water6.jpg",
-                "public/images/water/water7.jpg",
-                "public/images/water/water8.jpg",
-                "public/images/water/water9.jpg",
-                "public/images/water/water10.jpg",
-                "public/images/water/water11.jpg",
-                "public/images/water/water12.jpg",
-                "public/images/water/water13.jpg",
-                "public/images/water/water14.jpg",
-                "public/images/water/water15.jpg",
-                "public/images/water/water16.jpg",
-                "public/images/water/water17.jpg",
-                "public/images/water/water18.jpg",
-                "public/images/water/water19.jpg",
-                "public/images/water/water20.jpg",
-                "public/images/water/water21.jpg",
-                "public/images/water/water22.jpg",
-                "public/images/water/water23.jpg"
-            ]
+            "normalMap": "public/images/normalMaps/waternormals.jpg"
         },
         "sky": {
             "visible": true,
-            "turbidity": 20,
-            "rayleigh": 0,
-            "mieCoefficient": 0.002,
-            "mieDirectionalG": 0.905,
-            "skyRayColor": "#1e1429",
-            "skyColor": "#1e1429"
+            "turbidity": 0,
+            "rayleigh": 0.0001,
+            "mieCoefficient": 0.1,
+            "mieDirectionalG": 0.975
         },
-        "sun": {
-            "elevation": 35,
-            "azimuth": 0,
-            "color": "#ffffff",
-            "exposure": 1
+        "SphereMesh": {
+            "visible": true,
+            "animate": false,
+            "resolution": 15,
+            "position": {
+                "x": 0,
+                "y": -45,
+                "z": 0
+            },
+            "material": {
+                "wireframe": false,
+                "flatShading": true,
+                "color": "#ffa200",
+                "emissive": "#000000",
+                "emissiveIntensity": 1.0,
+                "metalness": 0.8,
+                "ior": 1.5,
+                "reflectivity": 0.0,
+                "roughness": 0.35,
+                "displacementScale": 1.0,
+                "displacementBias": 0.0,
+                "aoMapIntensity": 3.0,
+                "envMapIntensity": 2.0,
+                "iridescence": 0.5,
+                "iridescenceIOR": 1.3,
+                "clearcoat": 0.0,
+                "specularIntensity": 50.0,
+                "specularColor": "#ffa200",
+                "thickness": 0.0,
+                "transmission": 0.0,
+                "normalScale": {
+                    "x": 2.5,
+                    "y": 2.5
+                },
+                "tiling": {
+                    "x": 2,
+                    "y": 2
+                }
+            },
+            "textures": {
+                "map": "public/images/textures/mossy_rock_diff_2k.png",
+                "normalMap": "public/images/textures/mossy_rock_nor_2k.png",
+                "roughnessMap": "public/images/textures/mossy_rock_rough_Ao_2k.png",
+                "displacementMap": "public/images/textures/mossy_rock_disp_2k.png",
+                "aoMap": "public/images/textures/mossy_rock_ao_2k.png",
+                "emissiveMap": "public/images/textures/mossy_rock_disp_2k.png",
+                "specularColorMap": "public/images/textures/mossy_rock_diff_2k.png"
+            },
+            "uniforms": {
+                "speed": 0.25,
+                "radius": 25.0,
+                "color": "#ffffff",
+                "noise_values": {
+                    "x": 4.0,
+                    "y": 2.5,
+                    "z": 1.0
+                }
+            }
+        },
+        "WaterWaves": {
+            "visible": true,
+            "size": 20000,
+            "resolution": 1024,
+            "scale": 1024,
+            "waterSpeed": 0.5,
+            "normalMap": "public/images/normalMaps/waternormals.jpg",
+            "position": {
+                "x": 0,
+                "y": -50,
+                "z": 0
+            },
+            "rotation": {
+                "x": 2,
+                "y": 0,
+                "z": 0
+            },
+            "material": {
+                "wireframe": false,
+                "transparent": true
+            },
+            "uniforms": {
+                "alpha": 1,
+                "distortionScale": 10,
+                "size": 10,
+                "waterColor": "#ffffff",
+                "hideUnderwater": 0,
+                "power": -2.5,
+                "waves": {
+                    "a": {
+                        "direction": -25,
+                        "steepness": 0.5,
+                        "wavelength": 25
+                    },
+                    "b": {
+                        "direction": 25,
+                        "steepness": 0.08,
+                        "wavelength": 500
+                    },
+                    "c": {
+                        "direction": -55,
+                        "steepness": 0.2,
+                        "wavelength": 500
+                    }
+                }
+            }
+        },
+        "MsdfText": {
+            "visible": true,
+            "position": {
+                "x": 500,
+                "y": 0,
+                "z": 0
+            },
+            "uniforms": {
+                "uColor": "#ffffff",
+                "uStrokeColor": "#ffffff",
+                "uStrokeInsetWidth": 0.3,
+                "uStrokeOutsetWidth": 0.0,
+                "uThreshold": 0.05,
+                "uAlphaTest": 0.01,
+                "uOpacity": 1.0,
+                "speed": 0.001,
+                "strength": 100,
+                "noise_values": {
+                    "x": 1.0,
+                    "y": 50.0,
+                    "z": 15.0
+                }
+            }
+        },
+        "Text": {
+            "visible": true,
+            "animate": true,
+            "position": {
+                "x": 0,
+                "y": 100,
+                "z": 0
+            },
+            "rotation": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            },
+            "offset": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "text_values": [
+                "There is no darkness",
+                "These are the shades\nof your body and spine",
+                "If white is all unite",
+                "Darkness is completely defined"
+            ],
+            "text": "These are the shades of your body and spine",
+            "size": 25,
+            "height": 5,
+            "curveSegments": 24,
+            "bevelEnabled": false,
+            "bevelThickness": 1,
+            "bevelSize": 1,
+            "bevelOffset": 0,
+            "bevelSegments": 5,
+            "morphValue": 0.95,
+            "material": {
+                "transparent": false,
+                "wireframe": false,
+                "flatShading": false,
+                "color": "#ffffff",
+                "emissive": "#ffffff",
+                "emissiveIntensity": 0.0,
+                "metalness": 2,
+                "ior": 1.5,
+                "reflectivity": 0.0,
+                "roughness": 0.35,
+                "envMapIntensity": 2.0,
+                "iridescence": 0.0,
+                "iridescenceIOR": 1.3,
+                "clearcoat": 0.5,
+                "specularIntensity": 50.0,
+                "specularColor": "#ffffff",
+                "thickness": 0.0,
+                "transmission": 0.0,
+                "aoMapIntensity": 25.0,
+                "normalScale": {
+                    "x": 1.0,
+                    "y": 1.0
+                },
+                "tiling": {
+                    "x": 0.01,
+                    "y": 0.01
+                }
+            },
+            "uniforms": {
+                "color": "#ffffff",
+                "alpha": 1,
+                "speed": 0.1,
+                "scale": 50,
+                "noise_values": {
+                    "x": 0,
+                    "y": 150,
+                    "z": 0.05
+                }
+            },
+            "textures": {
+                "map": "public/images/textures/mossy_rock_diff_2k.png",
+                "normalMap": "public/images/textures/mossy_rock_nor_2k.png",
+                "roughnessMap": "public/images/textures/mossy_rock_rough_Ao_2k.png",
+                "displacementMap": "public/images/textures/mossy_rock_disp_2k.png",
+                "aoMap": "public/images/textures/mossy_rock_ao_2k.png",
+                "emissiveMap": "public/images/textures/mossy_rock_disp_2k.png",
+                "specularColorMap": "public/images/textures/mossy_rock_diff_2k.png"
+            },
+            "update_function": 0
+        },
+        "Spline": {
+            "editorMode": false,
+            "close": false,
+            "tension": 0.5,
+            "path_values": [
+                {
+                    "path_1": [
+                        {
+                            "x": 1816.8838735178422,
+                            "y": 0,
+                            "z": 56.10018915737797
+                        },
+                        {
+                            "x": 1136.6217027085288,
+                            "y": 109.88247616995136,
+                            "z": -878.8873102813457
+                        },
+                        {
+                            "x": 350.38801086357455,
+                            "y": 0,
+                            "z": -1258.201692932459
+                        },
+                        {
+                            "x": -547.0883623448382,
+                            "y": 345.3769890926223,
+                            "z": -1656.829239563167
+                        },
+                        {
+                            "x": -1140.2705322091624,
+                            "y": 60.17591215709359,
+                            "z": -491.84007431121586
+                        },
+                        {
+                            "x": -1374.5407940900832,
+                            "y": 76.3388722299988,
+                            "z": 1154.467514239504
+                        },
+                        {
+                            "x": -204.2404321388792,
+                            "y": 85.61391725875714,
+                            "z": 964.7930110591336
+                        },
+                        {
+                            "x": 720.141896506378,
+                            "y": 0,
+                            "z": 1751.9113924838534
+                        },
+                        {
+                            "x": 1362.699097961689,
+                            "y": 0,
+                            "z": 1133.3062540610495
+                        },
+                        {
+                            "x": 1231.5001980938264,
+                            "y": 421.89161807260894,
+                            "z": 452.3424361093096
+                        },
+                        {
+                            "x": 1816.8838735178422,
+                            "y": 0,
+                            "z": 56.10018915737797
+                        }
+                    ]
+                },
+                {
+                    "path_2": [
+                        {
+                            "x": -1913.9627666501322,
+                            "y": 109.75986661423644,
+                            "z": -440.56146321892606
+                        },
+                        {
+                            "x": -1534.9372507328849,
+                            "y": 32.278707891585896,
+                            "z": 1154.467514239504
+                        },
+                        {
+                            "x": 606.6065552246145,
+                            "y": 95.34202510810337,
+                            "z": 1680.5881381649833
+                        },
+                        {
+                            "x": 1340.0945274118649,
+                            "y": 0,
+                            "z": 61.86716842716038
+                        },
+                        {
+                            "x": 387.74353631611183,
+                            "y": 12.944721434998002,
+                            "z": 0.31715897602185805
+                        }
+                    ]
+                }
+            ],
+            "path": "path_2",
+            "cameraEye": {
+                "visible": false,
+                "speed": 0.12,
+                "slowDownSpeed": 0.05,
+                "source_values": [
+                    "uniform",
+                    "centripetal",
+                    "chordal"
+                ],
+                "source": "uniform",
+                "follow": false,
+                "loop": false,
+                "slowDown": true,
+                "camera_follow": true,
+                "lookAhead": true,
+                "restart_function": 0
+            },
+            "addPoint_function": 0,
+            "removePoint_function": 0,
+            "exportSpline_function": 0
+        },
+        "Audio": {
+            "file": "public/files/darkness_mast2.mp3",
+            "autoPlay": false,
+            "loop": true,
+            "volume": 1
+        }
+    },
+    "animation": {
+        "debug": false,
+        "groups": {
+            "intro": {
+                "active": false,
+                "animations": {
+                    "Audio": {
+                        "play": {
+                            "play": {
+                                "key": "set_value",
+                                "value": {
+                                    "property": "play",
+                                    "value": true
+                                }
+                            },
+                            "condition": {
+                                "key": "on_start"
+                            }
+                        }
+                    },
+                    "camera": {
+                        "start_pos": {
+                            "move": {
+                                "key": "set_position",
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "Spline",
+                                        "positions",
+                                        0
+                                    ]
+                                }
+                            },
+                            "condition": {
+                                "key": "on_start"
+                            }
+                        }
+                    },
+                    "Spline": {
+                        "setFollow": {
+                            "follow": {
+                                "key": "set_value",
+                                "value": {
+                                    "property": [
+                                        "envParams",
+                                        "cameraEye",
+                                        "follow"
+                                    ],
+                                    "value": true
+                                }
+                            },
+                            "condition": {
+                                "key": "on_start"
+                            }
+                        }
+                    },
+                    "Text": {
+                        "set_value1": {
+                            "set_text": {
+                                "key": "set_value",
+                                "value": "There is no darkness"
+                            },
+                            "move": {
+                                "key": "set_position",
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "Spline",
+                                        "positions",
+                                        1
+                                    ]
+                                }
+                            },
+                            "lookAt": {
+                                "key": "look_at",
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "camera",
+                                        "position"
+                                    ]
+                                }
+                            },
+                            "animate_morph": {
+                                "key": "morph_target",
+                                "animation": {
+                                    "from": {
+                                        "value": 1
+                                    },
+                                    "to": {
+                                        "value": 0
+                                    },
+                                    "duration": 10000
+                                }
+                            },
+                            "condition": {
+                                "key": "distance",
+                                "source": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "camera",
+                                        "position"
+                                    ]
+                                },
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "Spline",
+                                        "positions",
+                                        0
+                                    ]
+                                },
+                                "distance": 1500
+                            }
+                        },
+                        "hide_after_1": {
+                            "visible_false": {
+                                "key": "set_visible",
+                                "value": false
+                            },
+                            "set_text": {
+                                "key": "set_value",
+                                "value": "These are the shades\nof your body and spine"
+                            },
+                            "move": {
+                                "key": "set_position",
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "Spline",
+                                        "positions",
+                                        2
+                                    ]
+                                },
+                                "offset": {
+                                    "x": 0,
+                                    "y": 0,
+                                    "z": 0
+                                }
+                            },
+                            "lookAt": {
+                                "key": "look_at",
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "Spline",
+                                        "positions",
+                                        1
+                                    ]
+                                }
+                            },
+                            "set_morph": {
+                                "key": "morph_target",
+                                "value": 1
+                            },
+                            "condition": {
+                                "after": "set_value1",
+                                "key": "distance",
+                                "source": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "camera",
+                                        "position"
+                                    ]
+                                },
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "Spline",
+                                        "positions",
+                                        2
+                                    ]
+                                },
+                                "distance": 1900
+                            }
+                        },
+                        "set_value2": {
+                            "animate_morph": {
+                                "key": "morph_target",
+                                "animation": {
+                                    "from": {
+                                        "value": 1
+                                    },
+                                    "to": {
+                                        "value": 0
+                                    },
+                                    "duration": 15000
+                                }
+                            },
+                            "visible_true": {
+                                "key": "set_visible",
+                                "value": true
+                            },
+                            "condition": {
+                                "after": "hide_after_1",
+                                "key": "distance",
+                                "source": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "camera",
+                                        "position"
+                                    ]
+                                },
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "Spline",
+                                        "positions",
+                                        2
+                                    ]
+                                },
+                                "distance": 1850
+                            }
+                        },
+                        "hide_after_2": {
+                            "visible_false": {
+                                "key": "set_visible",
+                                "value": false
+                            },
+                            "set_text": {
+                                "key": "set_value",
+                                "value": "If white is all unite"
+                            },
+                            "move": {
+                                "key": "set_position",
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "Spline",
+                                        "positions",
+                                        3
+                                    ]
+                                }
+                            },
+                            "lookAt": {
+                                "key": "look_at",
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "Spline",
+                                        "positions",
+                                        2
+                                    ]
+                                }
+                            },
+                            "set_morph": {
+                                "key": "morph_target",
+                                "value": 1
+                            },
+                            "condition": {
+                                "after": "set_value2",
+                                "key": "distance",
+                                "source": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "camera",
+                                        "position"
+                                    ]
+                                },
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "Spline",
+                                        "positions",
+                                        3
+                                    ]
+                                },
+                                "distance": 1600
+                            }
+                        },
+                        "set_value3": {
+                            "animate_morph": {
+                                "key": "morph_target",
+                                "animation": {
+                                    "from": {
+                                        "value": 1
+                                    },
+                                    "to": {
+                                        "value": 0
+                                    },
+                                    "duration": 13000
+                                }
+                            },
+                            "visible_true": {
+                                "key": "set_visible",
+                                "value": true
+                            },
+                            "condition": {
+                                "after": "hide_after_2",
+                                "key": "distance",
+                                "source": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "camera",
+                                        "position"
+                                    ]
+                                },
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "Spline",
+                                        "positions",
+                                        3
+                                    ]
+                                },
+                                "distance": 1750
+                            }
+                        },
+                        "hide_after_3": {
+                            "visible_false": {
+                                "key": "set_visible",
+                                "value": false
+                            },
+                            "set_text": {
+                                "key": "set_value",
+                                "value": "Darkness is completely defined"
+                            },
+                            "move": {
+                                "key": "set_position",
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "SphereMesh",
+                                        "mesh",
+                                        "position"
+                                    ]
+                                },
+                                "offset": {
+                                    "x": 0,
+                                    "y": 135,
+                                    "z": 0
+                                }
+                            },
+                            "lookAt": {
+                                "key": "look_at",
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "Spline",
+                                        "positions",
+                                        4
+                                    ]
+                                }
+                            },
+                            "set_morph": {
+                                "key": "morph_target",
+                                "value": 1
+                            },
+                            "condition": {
+                                "after": "set_value3",
+                                "key": "distance",
+                                "source": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "camera",
+                                        "position"
+                                    ]
+                                },
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "SphereMesh",
+                                        "mesh",
+                                        "position"
+                                    ]
+                                },
+                                "distance": 1340
+                            }
+                        },
+                        "set_value4": {
+                            "animate_morph": {
+                                "key": "morph_target",
+                                "animation": {
+                                    "from": {
+                                        "value": 1
+                                    },
+                                    "to": {
+                                        "value": 0
+                                    },
+                                    "duration": 15000
+                                }
+                            },
+                            "visible_true": {
+                                "key": "set_visible",
+                                "value": true
+                            },
+                            "condition": {
+                                "after": "hide_after_3",
+                                "key": "distance",
+                                "source": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "camera",
+                                        "position"
+                                    ]
+                                },
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "Spline",
+                                        "positions",
+                                        4
+                                    ]
+                                },
+                                "distance": 900
+                            }
+                        }
+                    },
+                    "SphereMesh": {
+                        "animate": {
+                            "animate": {
+                                "key": "set_value",
+                                "value": {
+                                    "property": "animate",
+                                    "value": true
+                                }
+                            },
+                            "condition": {
+                                "after": "Text,hide_after_2",
+                                "key": "distance",
+                                "source": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "camera",
+                                        "position"
+                                    ]
+                                },
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "SphereMesh",
+                                        "mesh",
+                                        "position"
+                                    ]
+                                },
+                                "distance": 1500
+                            }
+                        }
+                    },
+                    "intro_done": {
+                        "setActive": {
+                            "setActive": {
+                                "key": "set_value",
+                                "property": "active",
+                                "value": true
+                            },
+                            "condition": {
+                                "after": "Text,set_value4",
+                                "key": "distance",
+                                "source": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "camera",
+                                        "position"
+                                    ]
+                                },
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "SphereMesh",
+                                        "mesh",
+                                        "position"
+                                    ]
+                                },
+                                "distance": 515
+                            }
+                        }
+                    }
+                },
+                "condition": {
+                    "source": {
+                        "key": "visual_component",
+                        "value": [
+                            "components",
+                            "Audio",
+                            "loaded"
+                        ]
+                    },
+                    "value": true
+                }
+            },
+            "intro_done": {
+                "active": false,
+                "animations": {
+                    "intro": {
+                        "setActive": {
+                            "setActive": {
+                                "key": "set_value",
+                                "property": "active",
+                                "value": false
+                            },
+                            "condition": {
+                                "key": "on_start"
+                            }
+                        }
+                    },
+                    "renderer": {
+                        "blink": {
+                            "blink": {
+                                "key": "set_value",
+                                "property": "toneMappingExposure",
+                                "value": {
+                                    "key": "env_params",
+                                    "value": [
+                                        "components",
+                                        "sun",
+                                        "exposure"
+                                    ]
+                                },
+                                "animation": {
+                                    "from": {
+                                        "value": 1
+                                    },
+                                    "to": {
+                                        "value": 0
+                                    },
+                                    "type": {
+                                        "key": "blink_animation",
+                                        "repetitions": 1
+                                    },
+                                    "duration": 5000
+                                }
+                            },
+                            "condition": {
+                                "key": "on_start"
+                            }
+                        }
+                    },
+                    "Spline": {
+                        "setFollow": {
+                            "follow": {
+                                "key": "set_value",
+                                "value": {
+                                    "property": [
+                                        "envParams",
+                                        "cameraEye",
+                                        "follow"
+                                    ],
+                                    "value": false
+                                }
+                            },
+                            "condition": {
+                                "key": "on_start",
+                                "delay": 5000
+                            }
+                        }
+                    },
+                    "camera": {
+                        "autoRotate": {
+                            "autoRotate": {
+                                "key": "auto_rotate",
+                                "value": true
+                            },
+                            "condition": {
+                                "key": "on_start",
+                                "delay": 5000
+                            }
+                        }
+                    },
+                    "WaterWaves": {
+                        "reducePower": {
+                            "set_values": {
+                                "key": "set_value",
+                                "value": {
+                                    "property": [
+                                        "envParams",
+                                        "uniforms",
+                                        "power"
+                                    ],
+                                    "value": -0.2
+                                }
+                            },
+                            "condition": {
+                                "key": "on_start",
+                                "delay": 5000
+                            }
+                        }
+                    },
+                    "SphereMesh": {
+                        "animate": {
+                            "animate": {
+                                "key": "set_value",
+                                "value": {
+                                    "property": "animate",
+                                    "value": true
+                                }
+                            },
+                            "condition": {
+                                "key": "on_start",
+                                "delay": 2500
+                            }
+                        }
+                    },
+                    "State": {
+                        "showUI": {
+                            "showUI": {
+                                "key": "set_holder_state",
+                                "value": {
+                                    "introDone": true,
+                                    "showUI": true
+                                }
+                            },
+                            "condition": {
+                                "key": "on_start",
+                                "delay": 5000
+                            }
+                        }
+                    }
+                }
+            },
+            "ui": {
+                "active": false,
+                "animations": {
+                    "intro": {
+                        "setActive": {
+                            "setActive": {
+                                "key": "set_value",
+                                "property": "active",
+                                "value": false
+                            },
+                            "condition": {
+                                "key": "on_start"
+                            }
+                        }
+                    },
+                    "Audio": {
+                        "play": {
+                            "play": {
+                                "key": "set_value",
+                                "value": {
+                                    "property": "play",
+                                    "value": true
+                                }
+                            },
+                            "condition": {
+                                "key": "on_start"
+                            }
+                        }
+                    },
+                    "renderer": {
+                        "blink": {
+                            "blink": {
+                                "key": "set_value",
+                                "property": "toneMappingExposure",
+                                "value": {
+                                    "key": "env_params",
+                                    "value": [
+                                        "components",
+                                        "sun",
+                                        "exposure"
+                                    ]
+                                },
+                                "animation": {
+                                    "from": {
+                                        "value": 1
+                                    },
+                                    "to": {
+                                        "value": 0
+                                    },
+                                    "type": {
+                                        "key": "blink_animation",
+                                        "repetitions": 1
+                                    },
+                                    "duration": 5000
+                                }
+                            },
+                            "condition": {
+                                "key": "on_start"
+                            }
+                        }
+                    },
+                    "Spline": {
+                        "setFollow": {
+                            "follow": {
+                                "key": "set_value",
+                                "value": {
+                                    "property": [
+                                        "envParams",
+                                        "cameraEye",
+                                        "follow"
+                                    ],
+                                    "value": false
+                                }
+                            },
+                            "condition": {
+                                "key": "on_start",
+                                "delay": 5000
+                            }
+                        }
+                    },
+                    "camera": {
+                        "autoRotate": {
+                            "autoRotate": {
+                                "key": "auto_rotate",
+                                "value": true
+                            },
+                            "condition": {
+                                "key": "on_start",
+                                "delay": 5000
+                            }
+                        }
+                    },
+                    "WaterWaves": {
+                        "reducePower": {
+                            "set_values": {
+                                "key": "set_value",
+                                "value": {
+                                    "property": [
+                                        "envParams",
+                                        "uniforms",
+                                        "power"
+                                    ],
+                                    "value": -0.2
+                                }
+                            },
+                            "condition": {
+                                "key": "on_start",
+                                "delay": 5000
+                            }
+                        }
+                    },
+                    "Text": {
+                        "set_text": {
+                            "visible_false": {
+                                "key": "set_visible",
+                                "value": false
+                            },
+                            "set_text": {
+                                "key": "set_value",
+                                "value": "Darkness is completely defined"
+                            },
+                            "move": {
+                                "key": "set_position",
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "SphereMesh",
+                                        "mesh",
+                                        "position"
+                                    ]
+                                },
+                                "offset": {
+                                    "x": 0,
+                                    "y": 135,
+                                    "z": 0
+                                }
+                            },
+                            "lookAt": {
+                                "key": "look_at",
+                                "value": {
+                                    "key": "visual_component",
+                                    "value": [
+                                        "components",
+                                        "Spline",
+                                        "positions",
+                                        4
+                                    ]
+                                }
+                            },
+                            "set_morph": {
+                                "key": "morph_target",
+                                "value": 1
+                            },
+                            "animate_morph": {
+                                "key": "morph_target",
+                                "animation": {
+                                    "from": {
+                                        "value": 1
+                                    },
+                                    "to": {
+                                        "value": 0
+                                    },
+                                    "duration": 10000
+                                }
+                            },
+                            "visible_true": {
+                                "key": "set_visible",
+                                "value": true
+                            },
+                            "condition": {
+                                "key": "on_start",
+                                "delay": 2500
+                            }
+                        }
+                    },
+                    "SphereMesh": {
+                        "animate": {
+                            "animate": {
+                                "key": "set_value",
+                                "value": {
+                                    "property": "animate",
+                                    "value": true
+                                }
+                            },
+                            "condition": {
+                                "key": "on_start",
+                                "delay": 2500
+                            }
+                        }
+                    },
+                    "State": {
+                        "showUI": {
+                            "showUI": {
+                                "key": "set_holder_state",
+                                "value": {
+                                    "introDone": true,
+                                    "showUI": true
+                                }
+                            },
+                            "condition": {
+                                "key": "on_start",
+                                "delay": 5000
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "listeners": {
+            "camera": {
+                "active": true,
+                "listeners": {
+                    "WaterWaves": {
+                        "hide": {
+                            "key": "set_visible",
+                            "property": [
+                                "mesh"
+                            ],
+                            "source_value": [
+                                "position",
+                                "y"
+                            ],
+                            "condition": {
+                                "key": "bigger_then",
+                                "value": -50
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "postFX": {
+        "enabled": true,
+        "passes": {
+            "SSAA": {
+                "enabled": true,
+                "resolution": 1,
+                "params": {
+                    "sampleLevel": 2,
+                    "unbiased": true,
+                    "clearColor": "#000000",
+                    "clearAlpha": 1.0
+                }
+            },
+            "AdaptiveToneMapping": {
+                "enabled": false,
+                "resolution": 256,
+                "params": {
+                    "adaptive": true
+                }
+            },
+            "Bloom": {
+                "enabled": true,
+                "resolution": 1,
+                "params": {
+                    "threshold": 0.5,
+                    "strength": 0.5,
+                    "radius": 0.001
+                }
+            },
+            "Bokeh": {
+                "enabled": false,
+                "resolution": 1,
+                "uniforms": {
+                    "focus": 500.0,
+                    "aperture": 5,
+                    "maxblur": 0.01
+                }
+            },
+            "FXAA": {
+                "enabled": false,
+                "resolution": 1
+            }
+        }
+    },
+    "assets": {
+        "textures": [],
+        "normalMaps": []
+    },
+    "settings": {
+        "ultra": {
+            "camera": {
+                "fov": 50
+            },
+            "components": {
+                "WaterWaves": {
+                    "size": 20000,
+                    "resolution": 2048,
+                    "scale": 1024
+                },
+                "SphereMesh": {
+                    "resolution": 100
+                },
+                "Text": {
+                    "text": "",
+                    "curveSegments": 48
+                }
+            },
+            "postFX": {
+                "passes": {
+                    "SSAA": {
+                        "enabled": true,
+                        "resolution": 1,
+                        "params": {
+                            "sampleLevel": 24,
+                            "unbiased": true,
+                            "clearColor": "#000000",
+                            "clearAlpha": 1.0
+                        }
+                    }
+                }
+            }
+        },
+        "high": {
+            "camera": {
+                "fov": 50
+            },
+            "components": {
+                "WaterWaves": {
+                    "size": 20000,
+                    "resolution": 1024,
+                    "scale": 1024
+                },
+                "SphereMesh": {
+                    "resolution": 50
+                },
+                "Text": {
+                    "curveSegments": 24
+                }
+            },
+            "postFX": {
+                "passes": {
+                    "SSAA": {
+                        "params": {
+                            "sampleLevel": 4
+                        }
+                    }
+                }
+            }
+        },
+        "medium": {
+            "camera": {
+                "fov": 50
+            },
+            "components": {
+                "WaterWaves": {
+                    "size": 10000,
+                    "resolution": 1024,
+                    "scale": 1024
+                },
+                "SphereMesh": {
+                    "resolution": 15
+                },
+                "Text": {
+                    "curveSegments": 12
+                }
+            },
+            "postFX": {
+                "passes": {
+                    "SSAA": {
+                        "params": {
+                            "sampleLevel": 2
+                        }
+                    }
+                }
+            }
+        },
+        "low": {
+            "camera": {
+                "fov": 50
+            },
+            "components": {
+                "WaterWaves": {
+                    "size": 8000,
+                    "resolution": 512,
+                    "scale": 512
+                },
+                "SphereMesh": {
+                    "resolution": 5
+                },
+                "Text": {
+                    "curveSegments": 12
+                }
+            },
+            "postFX": {
+                "passes": {
+                    "SSAA": {
+                        "enabled": true,
+                        "params": {
+                            "sampleLevel": 2
+                        }
+                    }
+                }
+            }
+        },
+        "low_mobile": {
+            "camera": {
+                "fov": 120
+            },
+            "components": {
+                "sun": {
+                    "exposure": 0.2
+                },
+                "sky": {
+                    "rayleigh": 0.015
+                },
+                "Text": {
+                    "size": 55
+                },
+                "WaterWaves": {
+                    "uniforms": {
+                        "power": -0.2
+                    }
+                }
+            }
+        },
+        "low_mobile_ios_17": {
+            "camera": {
+                "fov": 120
+            },
+            "components": {
+                "sun": {
+                    "exposure": 0.2
+                },
+                "sky": {
+                    "rayleigh": 0.015
+                },
+                "Text": {
+                    "size": 55
+                },
+                "WaterWaves": {
+                    "uniforms": {
+                        "power": -0.2
+                    }
+                }
+            },
+            "postFX": {
+                "enabled": false
+            }
         }
     }
 }

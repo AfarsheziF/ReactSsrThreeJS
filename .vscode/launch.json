@@ -5,13 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
-            "request": "attach",
-            "name": "Node: Nodemon",
-            "processId": "${command:PickProcess}",
-            "restart": true,
-        },
-        {
             "name": "Npm Dev",
             "type": "node",
             "request": "launch",
@@ -26,8 +19,8 @@
             "type": "node",
             "request": "launch",
             "name": "Debug Webpack",
-            "program": "${workspaceFolder}\\public\\ReactSsrThreeJsTemp.server.bundle.js",
-            "preLaunchTask": "build_dev",
+            "program": "${workspaceFolder}\\public\\DarknessIsCompletelyDefined.server.bundle.js",
+            // "preLaunchTask": "build_dev",
             "sourceMaps": true,
             "env": {
                 "NODE_ENV": "development"

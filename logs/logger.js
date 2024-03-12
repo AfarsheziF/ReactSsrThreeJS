@@ -35,21 +35,7 @@ const logger = {
             logger.fileName = logger.logsName + "_" + today.getDate() + "-" + (today.getMonth() + 1) + "-" + today.getFullYear() + "_" + `${today.getHours()}-${today.getMinutes()}`;
             console.log(`Logger init: ${logger.fileName}. Dirname: ${that.dirname}`);
 
-            // Clear dev logs
-            if (global.__DEV__) {
-                serverUtils.emptyDir('/logs/development', 'holder.txt').then(
-                    res => {
-                        console.log("Development logs deleted");
-                        initLogFile();
-                    },
-                    e => {
-                        console.log(e);
-                        initLogFile();
-                    }
-                )
-            } else {
-                initLogFile();
-            }
+            initLogFile();
 
             function initLogFile() {
                 serverUtils.readFile("/logs/" + global.hostState + '/' + logger.fileName + ".json").then(
@@ -156,22 +142,26 @@ const logger = {
     saveToLogFile(_log) {
         const that = this;
         return new Promise((resolve, reject) => {
-            logger.currentLog = _log;
-            let data = JSON.stringify(logger.currentLog);
-            let filePath = that.dirname + "/" + logger.fileName + ".json";
-            if (!data) {
-                data = "log file was invalid"
-            }
-            // console.log('Saving log file: ' + filePath);
-            if (fs && fs.watchFile) {
-                fs.writeFile(filePath, data,
-                    function (e) {
-                        if (e) {
-                            console.error(e);
-                            reject(e);
-                        }
-                        resolve();
-                    });
+            if (!global.__DEV__) {
+                this.currentLog = _log;
+                let data = JSON.stringify(this.currentLog);
+                let filePath = that.dirname + "/" + this.fileName + ".json";
+                if (!data) {
+                    data = "log file was invalid"
+                }
+                // console.log('Saving log file: ' + filePath);
+                if (fs && fs.watchFile) {
+                    fs.writeFile(filePath, data,
+                        function (e) {
+                            if (e) {
+                                console.error(e);
+                                reject(e);
+                            }
+                            resolve();
+                        });
+                }
+            } else {
+                resolve();
             }
         })
     },

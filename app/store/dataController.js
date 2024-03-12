@@ -5,7 +5,7 @@ let baseUrl = '';
 const dataController = {
 
     makeRequest(method, routes, params) {
-        baseUrl = global.__DEV__ ? "" : window.envParams.baseUrl
+        baseUrl = global.__DEV__ ? "" : location.origin // Using uberspace web routes
         return new Promise((resolve, reject) => {
             if (!Array.isArray(routes)) {
                 routes = [routes];
@@ -23,11 +23,15 @@ const dataController = {
                 return fetch(baseUrl + route, {
                     method: method,
                     body: params ? JSON.stringify(params) : null,
-                    headers: {
+                    headers: params && {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
                     }
-                }).then(res => res.json())
+                })
+                    .then(
+                        res => res.json(),
+                        e => console.log(e)
+                    )
             }
         })
     },

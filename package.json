@@ -1,5 +1,5 @@
 {
-  "name": "ReactSSRThreeJsTemplate",
+  "name": "DarknessIsCompletelyDefined",
   "version": "1.0.0",
   "author": {
     "name": "Or Sarfati",
@@ -8,7 +8,7 @@
   },
   "private": true,
   "dependencies": {
-    "@babel/core": "^7.23.3",
+    "@babel/core": "^7.23.6",
     "@babel/node": "^7.22.19",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/preset-env": "^7.23.3",
@@ -31,9 +31,13 @@
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "css-loader": "^6.8.1",
+    "detect-gpu": "^5.0.37",
     "express": "^4.18.2",
+    "glsl-noise": "^0.0.0",
+    "glslify-loader": "^2.0.0",
     "html-react-parser": "^5.0.6",
     "lil-gui": "^0.19.1",
+    "lodash": "^4.17.21",
     "md5": "^2.3.0",
     "mini-css-extract-plugin": "^2.7.6",
     "moment": "^2.29.4",
@@ -43,8 +47,10 @@
     "node-sass": "^9.0.0",
     "nodemon": "^3.0.1",
     "npm-run-all": "^4.1.5",
+    "raw-loader": "^4.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-inlinesvg": "^4.1.0",
     "react-router": "^6.20.0",
     "react-router-dom": "^6.20.0",
     "remove": "^0.1.5",
@@ -52,23 +58,32 @@
     "sass-loader": "^13.3.2",
     "serialize-javascript": "^6.0.1",
     "styled-components": "^6.1.1",
-    "three": "^0.158.0",
+    "three-custom-shader-material": "^5.4.0",
+    "three-msdf-text-utils": "^1.1.6",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
     "webpack-node-externals": "^3.0.0"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.23.3",
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@svgr/webpack": "^6.4.0",
     "@types/node": "^18.8.5",
+    "babel-plugin-glsl": "^1.0.0",
+    "babel-plugin-macros": "^3.1.0",
     "browser-sync-webpack-plugin": "^2.3.0",
-    "terser-webpack-plugin": "^5.0.3"
+    "eslint": "^8.55.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-webpack-plugin": "^4.0.1",
+    "glslify": "^7.1.1",
+    "terser-webpack-plugin": "^5.0.3",
+    "webpack-bundle-analyzer": "^4.10.1"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=production node public/ReactSsrThreeJsTemp.server.bundle.js",
+    "start": "cross-env NODE_ENV=production node public/DarknessIsCompletelyDefined.server.bundle.js",
     "webpack:client": "webpack --config webpack.client.js --watch",
     "webpack:server": "webpack --config webpack.server.js --watch",
-    "webpack:start": "nodemon --watch public --exec node --inspect public/ReactSsrThreeJsTemp.server.bundle.js",
+    "webpack:start": "nodemon --watch public --exec node --inspect public/DarknessIsCompletelyDefined.server.bundle.js",
     "dev": "cross-env sendErrorEmails=\"true\" NODE_ENV=development npm-run-all --parallel webpack:*",
     "dev_linux": "cross-env NODE_OPTIONS=--openssl-legacy-provider sendErrorEmails=\"true\" NODE_ENV=development npm-run-all --parallel webpack:*",
     "build": "cross-env NODE_ENV=production webpack --mode production --config webpack.client.js && webpack --mode production --config webpack.server.js",
@@ -76,9 +91,12 @@
     "build_linux": "cross-env NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=production npm-run-all linux:*",
     "build_render": "cross-env NODE_ENV=production npm-run-all linux:*",
     "linux:client": "webpack --mode production --config webpack.client.js",
-    "linux:server": "webpack --mode production --config webpack.server.js"
+    "linux:server": "webpack --mode production --config webpack.server.js",
+    "prod": "cross-env sendErrorEmails=\"true\" NODE_ENV=production npm-run-all --parallel webpack:*"
   },
-  "engines": {
-    "node": ">=20"
+  "browserify": {
+    "transform": [
+      "glslify"
+    ]
   }
 }
