@@ -16,17 +16,6 @@
             ]
         },
         {
-            "type": "node",
-            "request": "launch",
-            "name": "Debug Webpack",
-            "program": "${workspaceFolder}\\public\\DarknessIsCompletelyDefined.server.bundle.js",
-            // "preLaunchTask": "build_dev",
-            "sourceMaps": true,
-            "env": {
-                "NODE_ENV": "development"
-            }
-        },
-        {
             "name": "Npm Prod",
             "type": "node",
             "request": "launch",

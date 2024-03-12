@@ -1,6 +1,6 @@
 {
-  "name": "DarknessIsCompletelyDefined",
-  "version": "1.0.0",
+  "name": "ThreeJSReactSsrTemplate",
+  "version": "1.1.0",
   "author": {
     "name": "Or Sarfati",
     "email": "afrshezif@gmail.com",
@@ -80,10 +80,10 @@
     "webpack-bundle-analyzer": "^4.10.1"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=production node public/DarknessIsCompletelyDefined.server.bundle.js",
+    "start": "cross-env NODE_ENV=production node public/ThreeJSReactSsrTemplate.server.bundle.js",
     "webpack:client": "webpack --config webpack.client.js --watch",
     "webpack:server": "webpack --config webpack.server.js --watch",
-    "webpack:start": "nodemon --watch public --exec node --inspect public/DarknessIsCompletelyDefined.server.bundle.js",
+    "webpack:start": "nodemon --watch public --exec node --inspect public/ThreeJSReactSsrTemplate.server.bundle.js",
     "dev": "cross-env sendErrorEmails=\"true\" NODE_ENV=development npm-run-all --parallel webpack:*",
     "dev_linux": "cross-env NODE_OPTIONS=--openssl-legacy-provider sendErrorEmails=\"true\" NODE_ENV=development npm-run-all --parallel webpack:*",
     "build": "cross-env NODE_ENV=production webpack --mode production --config webpack.client.js && webpack --mode production --config webpack.server.js",
