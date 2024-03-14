@@ -73,7 +73,10 @@ export default class SceneTest extends React.Component {
             this.width = this.mount.clientWidth;
             this.height = this.mount.clientHeight;
 
-            objects = {};
+            objects = {
+                objects: {},
+                lights: {}
+            };
 
             // RENDERER
             objects.renderer = new THREE.WebGLRenderer({
@@ -91,23 +94,28 @@ export default class SceneTest extends React.Component {
 
             // CONTROLS
             objects.cameraControls = new OrbitControls(objects.camera, objects.renderer.domElement);
-
+            objects.cameraControls.enableDamping = true;
             // LIGHTS
-            objects.ambientLight = new THREE.AmbientLight(0x7c7c7c, 3.0);
-
-            objects.light = new THREE.DirectionalLight(0xFFFFFF, 3.0);
-            objects.light.position.set(0.32, 0.39, 0.7);
+            // objects.ambientLight = new THREE.AmbientLight(0x7c7c7c, 3.0);
+            objects.lights.directionalLight = new THREE.DirectionalLight('#ffffff', 3.0);
+            objects.lights.directionalLight.position.set(0.32, 0.39, 0.7);
 
             // SCENE
             objects.scene = new THREE.Scene();
 
-            objects.scene.add(objects.ambientLight);
-            objects.scene.add(objects.light);
+            // objects.scene.add(objects.ambientLight);
+            objects.scene.add(objects.lights.directionalLight);
 
             let geometry = new TeapotGeometry(300, -1);
-            const teapot = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ side: THREE.DoubleSide }));
+            const teapot = new THREE.Mesh(geometry, new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide }));
             objects.scene.add(teapot);
-            objects.teapot = teapot;
+            objects.objects.teapot = teapot;
+
+            // const geometry = new THREE.BoxGeometry(150, 150, 150);
+            // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+            // const mesh = new THREE.Mesh(geometry, material);
+            // objects.scene.add(mesh);
+            // objects.objects.cube1 = mesh;
 
             clock = new THREE.Clock();
 
@@ -118,6 +126,10 @@ export default class SceneTest extends React.Component {
             envParams = {
                 teapot: {
                     wireframe: false
+                },
+                directionalLight: {
+                    color: '#ffffff',
+                    intensity: 1
                 }
             };
 
@@ -125,8 +137,15 @@ export default class SceneTest extends React.Component {
             let teapotFolder = gui.addFolder('Teapot')
             teapotFolder.add(envParams.teapot, 'wireframe');
 
-            teapotFolder.onChange((controller) => {
-                objects.teapot.material.wireframe = envParams.teapot.wireframe;
+            let lightsFolder = gui.addFolder('DirectionalLight')
+            lightsFolder.addColor(envParams.directionalLight, 'color');
+            lightsFolder.add(envParams.directionalLight, 'intensity');
+
+            gui.onChange((controller) => {
+                // console.log(controller);
+                objects.objects.teapot.material.wireframe = envParams.teapot.wireframe;
+                objects.lights.directionalLight.color = new THREE.Color(envParams.directionalLight.color);
+                objects.lights.directionalLight.intensity = envParams.directionalLight.intensity
             });
 
             loadScene();
@@ -186,6 +205,10 @@ export default class SceneTest extends React.Component {
 
         objects.stats.update();
         objects.cameraControls.update(this.deltaTime);
+
+        //
+        // objects.objects.teapot.rotation.x += 0.005;
+        // objects.objects.teapot.rotation.y += 0.01;
 
         this.frameId = window.requestAnimationFrame(this.update);
         objects.renderer.render(objects.scene, objects.camera);
